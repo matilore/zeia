@@ -59,10 +59,7 @@ const Li = styled.li`
     display: flex;
     margin: 20px 35px;
     line-height: 1.5em;
-    &:hover {
-      background: rgb(40, 95, 161);
-      color: white;
-  }
+    background: ${props => props.selected ? 'rgb(40, 95, 161)' : 'transparent'}
 `;
 
 const Result = styled.div`
@@ -87,7 +84,8 @@ class Autocomplete extends React.Component {
         super();
         this.state = {
             allCoins: [],
-            value: ''
+            value: '',
+            cursor: 0
         }
     }
 
@@ -102,12 +100,25 @@ class Autocomplete extends React.Component {
     }
 
     handleChange = (event, num) => {
-        console.log(event.target.value);
-        this.setState({ value: event.target.value })
+        const { cursor, allCoins } = this.state
+        console.log(cursor)
+        if (event.key === 'ArrowUp' && cursor > 0) {
+            this.setState(prevState => ({
+                cursor: prevState.cursor - 1
+            }))
+        } else if (event.key === 'ArrowDown' && cursor < 10 - 1) {
+            this.setState(prevState => ({
+                cursor: prevState.cursor + 1
+            }))
+        } else if (event.target.value !== '') {
+            this.setState({ value: event.target.value })
+        } else {
+            this.setState({ value: event.target.value, result: '' })
+        }
     }
 
     selectValue = (event) => {
-        const coin = event.target.id;
+        const coin = event.target.getAttribute('data-name');
         axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${coin}&tsyms=EUR`)
             .then((response) => {
                 console.log(response);
@@ -122,7 +133,7 @@ class Autocomplete extends React.Component {
 
 
     render() {
-        const { allCoins } = this.state;
+        const { allCoins, cursor } = this.state;
         return (
             <Wrapper>
                 <InputWrapper>
@@ -139,16 +150,18 @@ class Autocomplete extends React.Component {
                                         coin.label.toLowerCase().includes(this.state.value.toLowerCase()) ||
                                         coin.name.toLowerCase().includes(this.state.value.toLowerCase())
                                     );
-                                }).slice(0, 10).map((coin) => {
-                                    return <Li id={coin.name} onClick={this.selectValue}><CoinIcon src={coin.image}/>{coin.label} ({coin.name})</Li>
+                                }).slice(0, 10).map((coin, index) => {
+                                    return (cursor === index ?
+                                     <Li data-name={coin.name} selected id={index} onClick={this.selectValue}><CoinIcon src={coin.image} />{coin.label} ({coin.name})</Li> :
+                                     <Li data-name={coin.name} id={index} onClick={this.selectValue}><CoinIcon src={coin.image}/>{coin.label} ({coin.name})</Li>
+                                    )
                                 })
                             }
                         </ul>
                     </Results>
                 }
                 <Result>
-                    {/* just a patch to be solved */}
-                    {this.state.value === ''? '' : this.state.result}
+                    {this.state.result}
                 </Result>
             </Wrapper>
         )
