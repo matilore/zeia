@@ -1,9 +1,16 @@
 import React from 'react';
 import axios from 'axios';
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import icon from 'images/lens.svg'
+import moveCursorToEnd from 'helpers/styleHelpers'
 
 const BASE_URL_IMAGES = 'https://www.cryptocompare.com/'
+
+const blinker = keyframes`
+    0%   { border-bottom-color: rgba(79, 207, 71, 1); }
+    50%  { border-bottom-color: rgba(79, 207, 71, 0); }
+    100% { border-bottom-color: rgba(79, 207, 71, 1); }
+`
 
 const Wrapper = styled.div`
     width: 50%;
@@ -35,9 +42,9 @@ const InputWrapper = styled.div`
 
 const Icon = styled.div`
     width: 22px;
-    height: 20px;
+    height: 17px;
     position: relative;
-    left: 5%;
+    left: calc(5% + 2px);
     background: url(${icon});
     background-size: cover;
     background-repeat: no-repeat;
@@ -47,11 +54,17 @@ const Icon = styled.div`
 const Input = styled.input`
     width: 100%;
     height: 2em;
-    padding-left: 6%;
+    padding-left: 8%;
     line-height: 1.5em;
     font-size: 1.2em;
     font-family: 'Orbitron', sans-serif;
-
+    color: transparent;
+    text-shadow: 0 0 0 #2196f3;
+    outline: none;
+    border-bottom: 4px solid transparent;
+    &:focus {
+        animation: ${blinker} 2s linear infinite;
+    }
 `
 
 const Li = styled.li`
@@ -90,15 +103,6 @@ class Autocomplete extends React.Component {
         }
     }
 
-    // componentDidMount = () => {
-    //     const allCoins = this.props.allCoins;
-    //     this.setState({ allCoins })
-    // }
-
-    // componentWillReceiveProps = (nextProps) => {
-    //     const allCoins = nextProps.allCoins;
-    //     this.setState({ allCoins })
-    // }
 
     filterCoins = (input) => (
         this.props.allCoins.filter((coin) => (
@@ -111,10 +115,11 @@ class Autocomplete extends React.Component {
         const input = event.target.value;
         const { cursor, filteredCoins } = this.state;
         if (event.key === 'ArrowUp' && cursor > 0) {
+            moveCursorToEnd(event.target);
             this.setState(prevState => ({
                 cursor: prevState.cursor - 1
             }))
-        } else if (event.key === 'ArrowDown' && cursor < 10 - 1) {
+        } else if (event.key === 'ArrowDown' && cursor < filteredCoins.length - 1) {
             this.setState(prevState => ({
                 cursor: prevState.cursor + 1
             }))
@@ -140,6 +145,9 @@ class Autocomplete extends React.Component {
             });
     }
 
+    changeCursor = (event) => {
+        this.setState({ cursor: Number(event.target.id) })
+    }
 
 
     render() {
@@ -157,8 +165,22 @@ class Autocomplete extends React.Component {
                             {
                                 filteredCoins.map((coin, index) => {
                                     return (cursor === index ?
-                                     <Li key={coin.name} data-name={coin.name} selected id={index} onClick={this.selectValue}><CoinIcon src={coin.image} />{coin.label} ({coin.name})</Li> :
-                                        <Li key={coin.name} data-name={coin.name} id={index} onClick={this.selectValue}><CoinIcon src={coin.image}/>{coin.label} ({coin.name})</Li>
+                                        (
+                                            <Li
+                                                key={coin.name}
+                                                data-name={coin.name}
+                                                selected id={index}
+                                                onClick={this.selectValue}>
+                                                <CoinIcon src={coin.image} />{coin.label} ({coin.name})</Li>
+                                        ) : (
+                                            <Li
+                                                key={coin.name}
+                                                data-name={coin.name}
+                                                onMouseOver={this.changeCursor}
+                                                id={index}
+                                                onClick={this.selectValue}>
+                                                <CoinIcon src={coin.image} />{coin.label} ({coin.name})</Li>
+                                        )
                                     )
                                 })
                             }

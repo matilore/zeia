@@ -35,7 +35,6 @@ class MainContainer extends React.Component {
   componentWillMount = () => {
     axios.get(`https://min-api.cryptocompare.com/data/all/coinlist`)
       .then((response) => {
-        // response.data.DATA
         let allCoins = response.data.Data;
         const allKeys = Object.keys(response.data.Data);
         allCoins = allKeys.map((key) => {
