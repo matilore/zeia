@@ -48,26 +48,9 @@ class MainContainer extends React.Component {
       });
   }
 
-  handleChange = (event) => {
-    this.setState({ value: event.target.value })
-    // event.preventDefault();
-    // const coin = event.target.value;
-    // axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${event.target.value}&tsyms=EUR`)
-    //   .then((response) => {
-    //     // console.log(response.data.RAW);
-    //     this.setState({ result: response.data.DISPLAY[coin].EUR.PRICE })
-
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
-  }
-
-
 
   render() {
     const { allCoins } = this.state;
-    console.log('allcoins: ', allCoins);
     return (
       <MainWrapper>
         <InputWrapper>

@@ -59,7 +59,8 @@ const Li = styled.li`
     display: flex;
     margin: 20px 35px;
     line-height: 1.5em;
-    background: ${props => props.selected ? 'rgb(40, 95, 161)' : 'transparent'}
+    background: ${props => props.selected ? 'rgb(40, 95, 161)' : 'transparent'};
+    color: ${props => props.selected ? 'white' : 'inherit'}
 `;
 
 const Result = styled.div`
@@ -83,25 +84,32 @@ class Autocomplete extends React.Component {
     constructor() {
         super();
         this.state = {
-            allCoins: [],
             value: '',
-            cursor: 0
+            cursor: 0,
+            filteredCoins: []
         }
     }
 
-    componentDidMount = () => {
-        const allCoins = this.props.allCoins;
-        this.setState({ allCoins })
-    }
+    // componentDidMount = () => {
+    //     const allCoins = this.props.allCoins;
+    //     this.setState({ allCoins })
+    // }
 
-    componentWillReceiveProps = (nextProps) => {
-        const allCoins = nextProps.allCoins;
-        this.setState({ allCoins })
-    }
+    // componentWillReceiveProps = (nextProps) => {
+    //     const allCoins = nextProps.allCoins;
+    //     this.setState({ allCoins })
+    // }
 
-    handleChange = (event, num) => {
-        const { cursor, allCoins } = this.state
-        console.log(cursor)
+    filterCoins = (input) => (
+        this.props.allCoins.filter((coin) => (
+            coin.label.toLowerCase().includes(input.toLowerCase()) ||
+            coin.name.toLowerCase().includes(input.toLowerCase())
+        )).slice(0, 10)
+    )
+
+    handleChange = (event) => {
+        const input = event.target.value;
+        const { cursor, filteredCoins } = this.state;
         if (event.key === 'ArrowUp' && cursor > 0) {
             this.setState(prevState => ({
                 cursor: prevState.cursor - 1
@@ -110,20 +118,22 @@ class Autocomplete extends React.Component {
             this.setState(prevState => ({
                 cursor: prevState.cursor + 1
             }))
-        } else if (event.target.value !== '') {
-            this.setState({ value: event.target.value })
+        } else if (event.key === 'Enter') {
+            const selectedCoin = filteredCoins[cursor].name;
+            this.selectValue(selectedCoin)
+        } else if (input !== '') {
+            const filteredCoins = this.filterCoins(input);
+            this.setState({ value: input, filteredCoins })
         } else {
-            this.setState({ value: event.target.value, result: '' })
+            this.setState({ value: input, result: '' })
         }
     }
 
-    selectValue = (event) => {
-        const coin = event.target.getAttribute('data-name');
+    selectValue = (selection) => {
+        const coin = typeof selection === 'string' ? selection : selection.target.getAttribute('data-name');
         axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${coin}&tsyms=EUR`)
             .then((response) => {
-                console.log(response);
                 this.setState({ result: response.data.DISPLAY[coin].EUR.PRICE })
-
             })
             .catch(function (error) {
                 console.log(error);
@@ -133,7 +143,7 @@ class Autocomplete extends React.Component {
 
 
     render() {
-        const { allCoins, cursor } = this.state;
+        const { cursor, filteredCoins } = this.state;
         return (
             <Wrapper>
                 <InputWrapper>
@@ -145,15 +155,10 @@ class Autocomplete extends React.Component {
                     <Results>
                         <ul>
                             {
-                                allCoins.filter((coin) => {
-                                    return (
-                                        coin.label.toLowerCase().includes(this.state.value.toLowerCase()) ||
-                                        coin.name.toLowerCase().includes(this.state.value.toLowerCase())
-                                    );
-                                }).slice(0, 10).map((coin, index) => {
+                                filteredCoins.map((coin, index) => {
                                     return (cursor === index ?
-                                     <Li data-name={coin.name} selected id={index} onClick={this.selectValue}><CoinIcon src={coin.image} />{coin.label} ({coin.name})</Li> :
-                                     <Li data-name={coin.name} id={index} onClick={this.selectValue}><CoinIcon src={coin.image}/>{coin.label} ({coin.name})</Li>
+                                     <Li key={coin.name} data-name={coin.name} selected id={index} onClick={this.selectValue}><CoinIcon src={coin.image} />{coin.label} ({coin.name})</Li> :
+                                        <Li key={coin.name} data-name={coin.name} id={index} onClick={this.selectValue}><CoinIcon src={coin.image}/>{coin.label} ({coin.name})</Li>
                                     )
                                 })
                             }
