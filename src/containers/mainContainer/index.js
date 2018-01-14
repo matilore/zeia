@@ -13,7 +13,7 @@ const MainWrapper = styled.div`
 
 const InputWrapper = styled.div`
   display: flex;
-  height: 500px;
+  height: 700px;
   width: 100%;
   justify-content: center;
   align-items: center;

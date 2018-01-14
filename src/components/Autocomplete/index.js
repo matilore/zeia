@@ -17,14 +17,22 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-items: center;
+    align-items: center;
 `;
 
 const Results = styled.div`
     width: 100%;
-    position: relative;
-    right: 10px;
+    display:flex;
+    justify-content: center;
     margin-top: 20px;
-    `;
+    height: 70%;
+`;
+
+const Ul = styled.ul`
+    width: 80%;
+    margin: 0;
+    padding: 0;
+`;
 
 const Image = styled.div`
     width: auto;
@@ -70,8 +78,9 @@ const Input = styled.input`
 const Li = styled.li`
     list-style-type: none;
     display: flex;
-    margin: 20px 35px;
+    margin: 0px 35px 20px 35px;
     line-height: 1.5em;
+    width: 90%;
     background: ${props => props.selected ? 'rgb(40, 95, 161)' : 'transparent'};
     color: ${props => props.selected ? 'white' : 'inherit'}
 `;
@@ -79,6 +88,7 @@ const Li = styled.li`
 const Result = styled.div`
   font-family: 'Iceland', cursive;
   font-size: 50px;
+  height: 150px;
 `;
 
 const CoinIcon = styled.div`
@@ -161,7 +171,7 @@ class Autocomplete extends React.Component {
                 {
                     this.state.value != '' &&
                     <Results>
-                        <ul>
+                        <Ul>
                             {
                                 filteredCoins.map((coin, index) => {
                                     return (cursor === index ?
@@ -184,7 +194,7 @@ class Autocomplete extends React.Component {
                                     )
                                 })
                             }
-                        </ul>
+                        </Ul>
                     </Results>
                 }
                 <Result>
