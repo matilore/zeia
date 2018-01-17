@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Autocomplete from 'components/Autocomplete'
 
 const MainWrapper = styled.div`
-  background: rgb(171, 178, 185);
+  background: rgb(55, 62, 81);
   display: flex;
   justify-content: center;
   align-items: center;

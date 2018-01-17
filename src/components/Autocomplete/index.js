@@ -1,8 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import styled, { keyframes } from 'styled-components'
-import icon from 'images/lens.svg'
+import styled, { keyframes } from 'styled-components';
+import icon from 'images/lens.svg';
+import price from 'images/price.png';
+import change2 from 'images/change2.png'
+import marketcap from 'images/marketcap.png'
 import moveCursorToEnd from 'helpers/styleHelpers'
+import textFormatter from 'helpers/textHelper'
 
 const BASE_URL_IMAGES = 'https://www.cryptocompare.com/'
 
@@ -82,13 +86,15 @@ const Li = styled.li`
     line-height: 1.5em;
     width: 90%;
     background: ${props => props.selected ? 'rgb(40, 95, 161)' : 'transparent'};
-    color: ${props => props.selected ? 'white' : 'inherit'}
+    color: ${props => props.selected ? 'white' : 'rgb(244, 223, 246)'}
 `;
 
 const Result = styled.div`
   font-family: 'Iceland', cursive;
   font-size: 50px;
   height: 150px;
+  display: flex;
+  justify-content: center;
 `;
 
 const CoinIcon = styled.div`
@@ -102,6 +108,26 @@ const CoinIcon = styled.div`
     background-position: center;
 `;
 
+const InfoIconWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    font-size: 0.6em;
+    color: white;
+`;
+
+const InfoIcon = styled.div`
+    width: 40px;
+    height: 40px;
+    position: relative;
+    margin-right: 10px;
+    background: url(${props => props.src});
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+`;
+
 class Autocomplete extends React.Component {
 
     constructor() {
@@ -109,6 +135,7 @@ class Autocomplete extends React.Component {
         this.state = {
             value: '',
             cursor: 0,
+            result: {},
             filteredCoins: []
         }
     }
@@ -140,7 +167,7 @@ class Autocomplete extends React.Component {
             const filteredCoins = this.filterCoins(input);
             this.setState({ value: input, filteredCoins })
         } else {
-            this.setState({ value: input, result: '' })
+            this.setState({ value: input, result: {}, cursor: 0 })
         }
     }
 
@@ -148,7 +175,12 @@ class Autocomplete extends React.Component {
         const coin = typeof selection === 'string' ? selection : selection.target.getAttribute('data-name');
         axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${coin}&tsyms=EUR`)
             .then((response) => {
-                this.setState({ result: response.data.DISPLAY[coin].EUR.PRICE })
+                const formattedResponse = response.data.DISPLAY[coin].EUR;
+                const change24 = formattedResponse.CHANGEPCT24HOUR
+                const price = formattedResponse.PRICE;
+                let mrkcap = formattedResponse.MKTCAP;
+                mrkcap = textFormatter(mrkcap);
+                this.setState({ result: {price, change24, mrkcap}})
             })
             .catch(function (error) {
                 console.log(error);
@@ -161,12 +193,15 @@ class Autocomplete extends React.Component {
 
 
     render() {
-        const { cursor, filteredCoins } = this.state;
+        const { cursor, filteredCoins, result } = this.state;
+        const Brain = this;
         return (
             <Wrapper>
                 <InputWrapper>
                     <Icon />
-                    <Input placeholder='Type the crypto name...' onKeyUp={this.handleChange} />
+                    <Input
+                    placeholder='Type the crypto name...'
+                    onKeyUp={this.handleChange} />
                 </InputWrapper>
                 {
                     this.state.value != '' &&
@@ -197,9 +232,14 @@ class Autocomplete extends React.Component {
                         </Ul>
                     </Results>
                 }
-                <Result>
-                    {this.state.result}
-                </Result>
+                {
+                    Object.keys(result).length !== 0 &&
+                    <Result>
+                        <InfoIconWrapper><InfoIcon src={price}/>Price: <br/ >{result.price}</InfoIconWrapper>
+                        <InfoIconWrapper><InfoIcon src={change2} />24h trend: <br />{result.change24}%</InfoIconWrapper>
+                        <InfoIconWrapper><InfoIcon src={marketcap} />Market cap: <br />{result.mrkcap}</InfoIconWrapper>
+                    </Result>
+                }
             </Wrapper>
         )
     }
