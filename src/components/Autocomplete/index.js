@@ -7,7 +7,10 @@ import change2 from 'images/change2.png'
 import marketcap from 'images/marketcap.png'
 import moveCursorToEnd from 'helpers/styleHelpers'
 import textFormatter from 'helpers/textHelper'
+import Socket from 'helpers/Socket';
 
+
+const socket = new Socket('https://streamer.cryptocompare.com/');
 const BASE_URL_IMAGES = 'https://www.cryptocompare.com/'
 
 const blinker = keyframes`
@@ -22,6 +25,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-items: center;
     align-items: center;
+    margin-top: 2%;
 `;
 
 const Results = styled.div`
@@ -128,6 +132,7 @@ const InfoIcon = styled.div`
     background-position: center;
 `;
 
+
 class Autocomplete extends React.Component {
 
     constructor() {
@@ -139,6 +144,31 @@ class Autocomplete extends React.Component {
             filteredCoins: []
         }
     }
+
+    calculatePrice = (result) => {
+        axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=EUR`)
+            .then((response) => {
+                const formattedResponse = response.data.DISPLAY.BTC.EUR;
+                let price = formattedResponse.PRICE;
+                price = price.slice(2, price.length - 1);
+                price = price.split(',').join('');
+                price = parseFloat(price);
+                price = parseFloat(result.PRICE * price).toFixed(4);
+
+                this.setState({ result: { ...this.state.result, price, change24: result.CHANGE24HOURPCT } })
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+
+
+    setResult = (result, convertTo) => {
+        console.log(convertTo);
+        convertTo === 'BTC' ? this.calculatePrice(result) : this.setState({ result: { ...this.state.result, price: result.PRICE, change24: result.CHANGE24HOURPCT } });
+    };
 
 
     filterCoins = (input) => (
@@ -167,12 +197,15 @@ class Autocomplete extends React.Component {
             const filteredCoins = this.filterCoins(input);
             this.setState({ value: input, filteredCoins })
         } else {
+            socket.unsubscribe();
             this.setState({ value: input, result: {}, cursor: 0 })
         }
     }
 
     selectValue = (selection) => {
+        socket.unsubscribe();
         const coin = typeof selection === 'string' ? selection : selection.target.getAttribute('data-name');
+        socket.emit(coin, this.setResult);
         axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${coin}&tsyms=EUR`)
             .then((response) => {
                 const formattedResponse = response.data.DISPLAY[coin].EUR;
@@ -180,7 +213,7 @@ class Autocomplete extends React.Component {
                 const price = formattedResponse.PRICE;
                 let mrkcap = formattedResponse.MKTCAP;
                 mrkcap = textFormatter(mrkcap);
-                this.setState({ result: {price, change24, mrkcap}})
+                this.setState({ result: { ...this.state.result, mrkcap } })
             })
             .catch(function (error) {
                 console.log(error);
@@ -200,8 +233,8 @@ class Autocomplete extends React.Component {
                 <InputWrapper>
                     <Icon />
                     <Input
-                    placeholder='Type the crypto name...'
-                    onKeyUp={this.handleChange} />
+                        placeholder='Type the crypto name...'
+                        onKeyUp={this.handleChange} />
                 </InputWrapper>
                 {
                     this.state.value != '' &&
@@ -235,8 +268,8 @@ class Autocomplete extends React.Component {
                 {
                     Object.keys(result).length !== 0 &&
                     <Result>
-                        <InfoIconWrapper><InfoIcon src={price}/>Price: <br/ >{result.price}</InfoIconWrapper>
-                        <InfoIconWrapper><InfoIcon src={change2} />24h trend: <br />{result.change24}%</InfoIconWrapper>
+                        <InfoIconWrapper><InfoIcon src={price} />Price: <br />{result.price}</InfoIconWrapper>
+                        <InfoIconWrapper><InfoIcon src={change2} />24h trend: <br />{result.change24}</InfoIconWrapper>
                         <InfoIconWrapper><InfoIcon src={marketcap} />Market cap: <br />{result.mrkcap}</InfoIconWrapper>
                     </Result>
                 }
