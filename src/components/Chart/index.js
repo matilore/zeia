@@ -18,14 +18,9 @@ class Chart extends React.Component {
 
     render() {
         const { data } = this.props;
-        const maxValue = max(data, dataPoint => dataPoint.close);
-        const formattedData = data.map((dataPoint) => {
-            dataPoint.time = moment(new Date(dataPoint.time)).format("HH");
-            return dataPoint;
-        })
 
         return (
-            <LineChart width={600} height={300} data={formattedData}>
+            <LineChart width={600} height={300} data={data}>
                 <Line type="monotone" dataKey="close" stroke="#8884d8" />
                 <CartesianGrid stroke="#ccc" />
                 <XAxis dataKey='time'/>

@@ -157,15 +157,7 @@ class Autocomplete extends React.Component {
                     price = price.split(',').join('');
                     price = parseFloat(price);
                     price = parseFloat(result.PRICE * price).toFixed(4);
-                    // this.setState({ result: { ...this.state.result, price, change24: result.CHANGE24HOURPCT } });
-                    axios.get(`https://min-api.cryptocompare.com/data/histoday?fsym=${convertFrom}&tsym=${convertTo}&limit=60&aggregate=3&e=CCCAGG`)
-                        .then((subResponse) => {
-                            const data = subResponse.data.Data
-                            this.setState({ result: { ...this.state.result, price, change24: result.CHANGE24HOURPCT, data } })
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+                    this.setState({ result: { ...this.state.result, price, change24: result.CHANGE24HOURPCT } });
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -237,7 +229,6 @@ class Autocomplete extends React.Component {
 
 
     render() {
-        console.log(this.state);
         const { cursor, filteredCoins, result } = this.state;
         const Brain = this;
         return (
@@ -278,17 +269,12 @@ class Autocomplete extends React.Component {
                     </Results>
                 }
                 {
-                    Object.keys(result).length !== 0 &&
+                    Object.keys(result).length === 3 &&
                     <Result>
-                        <InfoIconWrapper><InfoIcon src={price} />Price: <br />{result.price}</InfoIconWrapper>
+                        <InfoIconWrapper><InfoIcon src={price} />Price: <br />{result.price}€</InfoIconWrapper>
                         <InfoIconWrapper><InfoIcon src={change2} />24h trend: <br />{result.change24}</InfoIconWrapper>
                         <InfoIconWrapper><InfoIcon src={marketcap} />Market cap: <br />{result.mrkcap}</InfoIconWrapper>
                     </Result>
-                }
-                {
-                    Object.keys(result).length !== 0 &&
-                    <Chart data={this.state.result.data} />
-
                 }
             </Wrapper>
         )
