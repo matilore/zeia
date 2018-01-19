@@ -3,15 +3,16 @@ import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
 import icon from 'images/lens.svg';
 import price from 'images/price.png';
-import change2 from 'images/change2.png'
-import marketcap from 'images/marketcap.png'
-import moveCursorToEnd from 'helpers/styleHelpers'
-import textFormatter from 'helpers/textHelper'
+import change2 from 'images/change2.png';
+import marketcap from 'images/marketcap.png';
+import moveCursorToEnd from 'helpers/styleHelpers';
+import textFormatter from 'helpers/textHelper';
 import Socket from 'helpers/Socket';
+import Chart from 'components/Chart';
 
 
 const socket = new Socket('https://streamer.cryptocompare.com/');
-const BASE_URL_IMAGES = 'https://www.cryptocompare.com/'
+const BASE_URL_IMAGES = 'https://www.cryptocompare.com/';
 
 const blinker = keyframes`
     0%   { border-bottom-color: rgba(79, 207, 71, 1); }
@@ -99,6 +100,7 @@ const Result = styled.div`
   height: 150px;
   display: flex;
   justify-content: center;
+  margin: 100px;
 `;
 
 const CoinIcon = styled.div`
@@ -145,29 +147,38 @@ class Autocomplete extends React.Component {
         }
     }
 
-    calculatePrice = (result) => {
-        axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=EUR`)
-            .then((response) => {
-                const formattedResponse = response.data.DISPLAY.BTC.EUR;
-                let price = formattedResponse.PRICE;
-                price = price.slice(2, price.length - 1);
-                price = price.split(',').join('');
-                price = parseFloat(price);
-                price = parseFloat(result.PRICE * price).toFixed(4);
-
-                this.setState({ result: { ...this.state.result, price, change24: result.CHANGE24HOURPCT } })
-
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+    calculatePrice = (result, convertFrom, convertTo) => {
+        if (convertTo === 'BTC') {
+            axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=EUR`)
+                .then((response) => {
+                    const formattedResponse = response.data.DISPLAY.BTC.EUR;
+                    let price = formattedResponse.PRICE;
+                    price = price.slice(2, price.length - 1);
+                    price = price.split(',').join('');
+                    price = parseFloat(price);
+                    price = parseFloat(result.PRICE * price).toFixed(4);
+                    // this.setState({ result: { ...this.state.result, price, change24: result.CHANGE24HOURPCT } });
+                    axios.get(`https://min-api.cryptocompare.com/data/histoday?fsym=${convertFrom}&tsym=${convertTo}&limit=60&aggregate=3&e=CCCAGG`)
+                        .then((subResponse) => {
+                            const data = subResponse.data.Data
+                            this.setState({ result: { ...this.state.result, price, change24: result.CHANGE24HOURPCT, data } })
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        } else {
+            this.setState({ result: { ...this.state.result, price: result.PRICE, change24: result.CHANGE24HOURPCT } });
+        }
     }
 
 
 
-    setResult = (result, convertTo) => {
-        console.log(convertTo);
-        convertTo === 'BTC' ? this.calculatePrice(result) : this.setState({ result: { ...this.state.result, price: result.PRICE, change24: result.CHANGE24HOURPCT } });
+    setResult = (result, convertFrom, convertTo) => {
+        this.calculatePrice(result, convertFrom, convertTo);
     };
 
 
@@ -205,7 +216,7 @@ class Autocomplete extends React.Component {
     selectValue = (selection) => {
         socket.unsubscribe();
         const coin = typeof selection === 'string' ? selection : selection.target.getAttribute('data-name');
-        socket.emit(coin, this.setResult);
+        socket.subscribe(coin, this.setResult);
         axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${coin}&tsyms=EUR`)
             .then((response) => {
                 const formattedResponse = response.data.DISPLAY[coin].EUR;
@@ -226,6 +237,7 @@ class Autocomplete extends React.Component {
 
 
     render() {
+        console.log(this.state);
         const { cursor, filteredCoins, result } = this.state;
         const Brain = this;
         return (
@@ -272,6 +284,11 @@ class Autocomplete extends React.Component {
                         <InfoIconWrapper><InfoIcon src={change2} />24h trend: <br />{result.change24}</InfoIconWrapper>
                         <InfoIconWrapper><InfoIcon src={marketcap} />Market cap: <br />{result.mrkcap}</InfoIconWrapper>
                     </Result>
+                }
+                {
+                    Object.keys(result).length !== 0 &&
+                    <Chart data={this.state.result.data} />
+
                 }
             </Wrapper>
         )

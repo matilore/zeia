@@ -8,7 +8,7 @@ export default class Socket {
         this.socket = openSocket(this.url);
     }
 
-    emit = (coinName, setResult) => {
+    subscribe = (coinName, setResult) => {
         this.convertTo = ['BTC', 'EUR'].filter(convertTo => coinName !== convertTo)[0];
         this.subscription = [`5~CCCAGG~${coinName}~${this.convertTo}`];
         var self = this;
@@ -28,11 +28,11 @@ export default class Socket {
     }
 
     dataUnpack = (data, setResult) => {
-        var from = data['FROMSYMBOL'];
-        var to = data['TOSYMBOL'];
-        var fsym = CCC.STATIC.CURRENCY.getSymbol(from);
-        var tsym = CCC.STATIC.CURRENCY.getSymbol(to);
-        var pair = from + to;
+        var convertFrom = data['FROMSYMBOL'];
+        var convertTo = data['TOSYMBOL'];
+        var fsym = CCC.STATIC.CURRENCY.getSymbol(convertFrom);
+        var tsym = CCC.STATIC.CURRENCY.getSymbol(convertTo);
+        var pair = convertFrom + convertTo;
 
         if (!this.currentPrice.hasOwnProperty(pair)) {
             this.currentPrice[pair] = {};
@@ -47,6 +47,6 @@ export default class Socket {
         }
         this.currentPrice[pair]['CHANGE24HOUR'] = CCC.convertValueToDisplay(tsym, (this.currentPrice[pair]['PRICE'] - this.currentPrice[pair]['OPEN24HOUR']));
         this.currentPrice[pair]['CHANGE24HOURPCT'] = ((this.currentPrice[pair]['PRICE'] - this.currentPrice[pair]['OPEN24HOUR']) / this.currentPrice[pair]['OPEN24HOUR'] * 100).toFixed(2) + "%";
-        setResult(this.currentPrice[pair], this.convertTo);
+        setResult(this.currentPrice[pair], convertFrom, convertTo,);
     };
 }
