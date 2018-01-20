@@ -16,6 +16,7 @@
     "import/no-named-as-default": ["off"],
     "no-console":0,
     "no-underscore-dangle": "off",
+    "no-confusing-arrow": ["error", {"allowParens": true}],
     "react/jsx-closing-bracket-location": ["off"],
     "react/jsx-space-before-closing": ["off"],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],

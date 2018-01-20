@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
 import icon from '../../images/lens.svg';
-import price from '../../images/price.png';
+import priceImage from '../../images/price.png';
 import change2 from '../../images/change2.png';
 import marketcap from '../../images/marketcap.png';
 import moveCursorToEnd from '../../helpers/styleHelpers';
@@ -80,8 +80,8 @@ const Li = styled.li`
     margin: 0px 35px 20px 35px;
     line-height: 1.5em;
     width: 90%;
-    background: ${props => props.selected ? 'rgb(40, 95, 161)' : 'transparent'};
-    color: ${props => props.selected ? 'white' : 'rgb(244, 223, 246)'}
+    background: ${props => (props.selected ? 'rgb(40, 95, 161)' : 'transparent')};
+    color: ${props => (props.selected ? 'white' : 'rgb(244, 223, 246)')}
 `;
 
 const Result = styled.div`
@@ -169,8 +169,8 @@ class Autocomplete extends React.Component {
     }
   }
 
-  filterCoins = (input) => (
-    this.props.allCoins.filter((coin) => (
+  filterCoins = input => (
+    this.props.allCoins.filter(coin => (
       coin.label.toLowerCase().includes(input.toLowerCase()) ||
           coin.name.toLowerCase().includes(input.toLowerCase())
     )).slice(0, 10)
@@ -192,8 +192,8 @@ class Autocomplete extends React.Component {
       const selectedCoin = filteredCoins[cursor].name;
       this.selectValue(selectedCoin);
     } else if (input !== '') {
-      const filteredCoins = this.filterCoins(input);
-      this.setState({ value: input, filteredCoins });
+      const newFilteredCoins = this.filterCoins(input);
+      this.setState({ value: input, filteredCoins: newFilteredCoins });
     } else {
       socket.unsubscribe();
       this.setState({ value: input, result: {}, cursor: 0 });
@@ -218,7 +218,7 @@ class Autocomplete extends React.Component {
     this.setState({ cursor: Number(event.target.id) });
   }
 
-  render () {
+  render() {
     const { cursor, filteredCoins, result } = this.state;
     return (
       <Wrapper>
@@ -233,9 +233,9 @@ class Autocomplete extends React.Component {
             <Results>
               <Ul>
                 {
-                  filteredCoins.map((coin, index) => {
-                    return (cursor === index
-                      ? (
+                  filteredCoins.map((coin, index) => (
+                    cursor === index
+                      ?
                         <Li
                           key={coin.name}
                           data-name={coin.name}
@@ -245,7 +245,7 @@ class Autocomplete extends React.Component {
                           <CoinIcon src={coin.image} />
                           {coin.label} ({coin.name})
                         </Li>
-                      ) : (
+                        :
                         <Li
                           key={coin.name}
                           data-name={coin.name}
@@ -256,9 +256,7 @@ class Autocomplete extends React.Component {
                           <CoinIcon src={coin.image} />
                           {coin.label} ({coin.name})
                         </Li>
-                      )
-                    );
-                  })
+                  ))
                 }
               </Ul>
             </Results>
@@ -267,7 +265,7 @@ class Autocomplete extends React.Component {
           Object.keys(result).length === 3 &&
             <Result>
               <InfoIconWrapper>
-                <InfoIcon src={price} />Price: <br />{result.price}€
+                <InfoIcon src={priceImage} />Price: <br />{result.price}€
               </InfoIconWrapper>
               <InfoIconWrapper>
                 <InfoIcon src={change2} />24h trend: <br />{result.change24}
@@ -283,7 +281,7 @@ class Autocomplete extends React.Component {
 }
 
 Autocomplete.propTypes = {
-
-}
+  allCoins: PropTypes.arrayOf()
+};
 
 export default Autocomplete;
