@@ -1,4 +1,2 @@
 
-export default (marketcap) => {
-  return marketcap
-}
+export default marketcap => marketcap;
