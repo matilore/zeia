@@ -148,42 +148,13 @@ class Autocomplete extends React.Component {
         }
     }
 
-    calculatePrice = (result, convertFrom, convertTo) => {
-        if (convertTo === 'BTC') {
-            axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=EUR`)
-                .then((response) => {
-                    const formattedResponse = response.data.DISPLAY.BTC.EUR;
-                    let price = formattedResponse.PRICE;
-                    price = price.slice(2, price.length - 1);
-                    price = price.split(',').join('');
-                    price = parseFloat(price);
-                    price = parseFloat(result.PRICE * price).toFixed(4);
-                    this.setState({ result: { ...this.state.result, price, change24: result.CHANGE24HOURPCT } });
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        } else {
-            this.setState({ result: { ...this.state.result, price: result.PRICE, change24: result.CHANGE24HOURPCT } });
-        }
-    }
-
-
-
-    setResult = (result, convertFrom, convertTo) => {
-        this.calculatePrice(result, convertFrom, convertTo);
-    };
-
-
-    // filterCoins = (input) => (
-    //     this.props.allCoins.filter((coin) => (
-    //         coin.label.toLowerCase().includes(input.toLowerCase()) ||
-    //         coin.name.toLowerCase().includes(input.toLowerCase())
-    //     )).slice(0, 10)
-    // )
 
     handleChange = (event) => {
-        const { filterCoins, filteredCoins } = this.props;
+        const {
+            filterCoins, filteredCoins, selectCoin,
+            unsubscribeSocket, allCoins, setResult
+        } = this.props;
+
         const input = event.target.value;
         const { cursor } = this.state;
         if (event.key === 'ArrowUp' && cursor > 0) {
@@ -197,31 +168,13 @@ class Autocomplete extends React.Component {
             }))
         } else if (event.key === 'Enter') {
             const selectedCoin = filteredCoins[cursor].name;
-            this.props.selectCoin(selectedCoin, this.setResult)
+            selectCoin(selectedCoin, setResult);
         } else if (input !== '') {
-            filterCoins(this.props.allCoins, input);
+            filterCoins(allCoins, input);
         } else {
-            socket.unsubscribe();
+            unsubscribeSocket();
             this.setState({ value: input, result: {}, cursor: 0 })
         }
-    }
-
-    selectValue = (selection) => {
-        socket.unsubscribe();
-        const coin = typeof selection === 'string' ? selection : selection.target.getAttribute('data-name');
-        socket.subscribe(coin, this.setResult);
-        axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${coin}&tsyms=EUR`)
-            .then((response) => {
-                const formattedResponse = response.data.DISPLAY[coin].EUR;
-                const change24 = formattedResponse.CHANGEPCT24HOUR
-                const price = formattedResponse.PRICE;
-                let mrkcap = formattedResponse.MKTCAP;
-                mrkcap = textFormatter(mrkcap);
-                this.setState({ result: { ...this.state.result, mrkcap } })
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
     }
 
     changeCursor = (event) => {
@@ -230,8 +183,8 @@ class Autocomplete extends React.Component {
 
 
     render() {
-        const { cursor, result } = this.state;
-        const { filteredCoins, inputValue } = this.props;
+        const { cursor } = this.state;
+        const { filteredCoins, inputValue, result } = this.props;
         return (
             <Wrapper>
                 <InputWrapper>

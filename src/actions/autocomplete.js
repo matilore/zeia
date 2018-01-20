@@ -34,20 +34,50 @@ export const filterCoins = (allCoins, inputValue) => {
 
 export const selectCoin = (selection, setResult) => {
     return dispatch => {
-    const coin = typeof selection === 'string' ? selection : selection.target.getAttribute('data-name');
-    socket.unsubscribe();
-    socket.subscribe(coin, setResult);
-    axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${coin}&tsyms=EUR`)
-        .then((response) => {
-            const formattedResponse = response.data.DISPLAY[coin].EUR;
-            let mrkcap = formattedResponse.MKTCAP;
-            mrkcap = textFormatter(mrkcap);
-            dispatch(setSelectedCoin({mrkcap}));
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        const coin = typeof selection === 'string' ? selection : selection.target.getAttribute('data-name');
+        socket.unsubscribe();
+        socket.subscribe(coin, setResult);
+        axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${selection}&tsyms=EUR`)
+            .then((response) => {
+                const formattedResponse = response.data.DISPLAY[coin].EUR;
+                let mrkcap = formattedResponse.MKTCAP;
+                mrkcap = textFormatter(mrkcap);
+                dispatch(setSelectedCoin({ mrkcap }));
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
+}
+
+export const setResult = (result, convertFrom, convertTo) => {
+    return dispatch => {
+        if (convertTo === 'BTC') {
+            axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=EUR`)
+                .then((response) => {
+                    const formattedResponse = response.data.DISPLAY.BTC.EUR;
+                    let price = formattedResponse.PRICE;
+                    price = price.slice(2, price.length - 1);
+                    price = price.split(',').join('');
+                    price = parseFloat(price);
+                    price = parseFloat(result.PRICE * price).toFixed(4);
+                    const change24 = result.CHANGE24HOURPCT;
+                    dispatch(setSelectedCoin({ price, change24 }));
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        } else {
+            const price = result.PRICE;
+            const change24 = result.CHANGE24HOURPCT;
+            dispatch(setSelectedCoin({ price, change24 }));
+        }
+    }
+}
+
+
+export const unsubscribeSocket = () => {
+    socket.unsubscribe();
 }
 
 

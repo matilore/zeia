@@ -14,6 +14,7 @@ function autocomplete(state = initialState, action) {
                 inputValue: action.inputValue
             }
         case 'SET_SELECTED_COIN':
+        console.log(action)
             return {
                 ...state,
                 result: {...state.result, ...action.result},
