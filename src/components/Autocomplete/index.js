@@ -7,11 +7,14 @@ import change2 from 'images/change2.png';
 import marketcap from 'images/marketcap.png';
 import moveCursorToEnd from 'helpers/styleHelpers';
 import textFormatter from 'helpers/textHelper';
-import Socket from 'helpers/Socket';
 import Chart from 'components/Chart';
 
+// redux
+import actionCreators from 'actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-const socket = new Socket('https://streamer.cryptocompare.com/');
+
 const BASE_URL_IMAGES = 'https://www.cryptocompare.com/';
 
 const blinker = keyframes`
@@ -26,7 +29,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-items: center;
     align-items: center;
-    margin-top: 2%;
+    margin-top: 10%;
 `;
 
 const Results = styled.div`
@@ -140,10 +143,8 @@ class Autocomplete extends React.Component {
     constructor() {
         super();
         this.state = {
-            value: '',
             cursor: 0,
-            result: {},
-            filteredCoins: []
+            result: {}
         }
     }
 
@@ -174,16 +175,17 @@ class Autocomplete extends React.Component {
     };
 
 
-    filterCoins = (input) => (
-        this.props.allCoins.filter((coin) => (
-            coin.label.toLowerCase().includes(input.toLowerCase()) ||
-            coin.name.toLowerCase().includes(input.toLowerCase())
-        )).slice(0, 10)
-    )
+    // filterCoins = (input) => (
+    //     this.props.allCoins.filter((coin) => (
+    //         coin.label.toLowerCase().includes(input.toLowerCase()) ||
+    //         coin.name.toLowerCase().includes(input.toLowerCase())
+    //     )).slice(0, 10)
+    // )
 
     handleChange = (event) => {
+        const { filterCoins, filteredCoins } = this.props;
         const input = event.target.value;
-        const { cursor, filteredCoins } = this.state;
+        const { cursor } = this.state;
         if (event.key === 'ArrowUp' && cursor > 0) {
             moveCursorToEnd(event.target);
             this.setState(prevState => ({
@@ -195,10 +197,9 @@ class Autocomplete extends React.Component {
             }))
         } else if (event.key === 'Enter') {
             const selectedCoin = filteredCoins[cursor].name;
-            this.selectValue(selectedCoin)
+            this.props.selectCoin(selectedCoin, this.setResult)
         } else if (input !== '') {
-            const filteredCoins = this.filterCoins(input);
-            this.setState({ value: input, filteredCoins })
+            filterCoins(this.props.allCoins, input);
         } else {
             socket.unsubscribe();
             this.setState({ value: input, result: {}, cursor: 0 })
@@ -229,8 +230,8 @@ class Autocomplete extends React.Component {
 
 
     render() {
-        const { cursor, filteredCoins, result } = this.state;
-        const Brain = this;
+        const { cursor, result } = this.state;
+        const { filteredCoins, inputValue } = this.props;
         return (
             <Wrapper>
                 <InputWrapper>
@@ -240,7 +241,7 @@ class Autocomplete extends React.Component {
                         onKeyUp={this.handleChange} />
                 </InputWrapper>
                 {
-                    this.state.value != '' &&
+                    inputValue != '' &&
                     <Results>
                         <Ul>
                             {
@@ -281,5 +282,15 @@ class Autocomplete extends React.Component {
     }
 }
 
-export default Autocomplete
+
+const mapStateToProps = (state) => {
+    return { ...state.autocomplete };
+}
+
+
+const mapDispachToProps = (dispatch) => {
+    return bindActionCreators({ ...actionCreators }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispachToProps)(Autocomplete);
 

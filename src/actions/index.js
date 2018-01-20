@@ -1,8 +1,10 @@
-// import { authUser, logout } from './dashboard'
+import { receiveAllCoins } from './coins'
+import { filterCoins, selectCoin } from './autocomplete';
 
-// const actionCreators = {
-//     authUser,
-//     logout
-// }
+const actionCreators = {
+    receiveAllCoins,
+    filterCoins,
+    selectCoin
+}
 
-// export default actionCreators
+export default actionCreators
