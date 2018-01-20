@@ -1,13 +1,13 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux'
 import { syncHistoryWithStore } from 'react-router-redux'
-import thunk from 'redux-thunk';
+import thunk from 'redux-thunk'
 import createHistory from 'history/createBrowserHistory'
 
 import { rootReducer } from './reducers/index'
 
 const store = createStore(rootReducer, compose(
-    applyMiddleware(thunk),
-    window.devToolsExtension ? window.devToolsExtension() : f => f
+  applyMiddleware(thunk),
+  window.devToolsExtension ? window.devToolsExtension() : f => f
 ))
 
 // Create an enhanced history that syncs navigation events with the store
@@ -16,4 +16,4 @@ const store = createStore(rootReducer, compose(
 // If you time travel, it will also pass the new state to React Router to update the component tree again.
 export const history = syncHistoryWithStore(createHistory(), store)
 
-export default store;
+export default store

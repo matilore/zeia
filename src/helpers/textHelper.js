@@ -1,5 +1,4 @@
 
-
 export default (marketcap) => {
-   return marketcap
+  return marketcap
 }

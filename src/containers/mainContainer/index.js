@@ -1,5 +1,5 @@
-import React from 'react';
-import axios from 'axios';
+import React from 'react'
+import axios from 'axios'
 import styled from 'styled-components'
 import Autocomplete from 'components/Autocomplete'
 
@@ -17,14 +17,11 @@ const InputWrapper = styled.div`
   width: 100%;
   justify-content: center;
   align-items: center;
-`;
-
-
+`
 
 class MainContainer extends React.Component {
-
-  constructor() {
-    super();
+  constructor () {
+    super()
     this.state = {
       result: '',
       allCoins: [],
@@ -35,21 +32,22 @@ class MainContainer extends React.Component {
   componentWillMount = () => {
     axios.get(`https://min-api.cryptocompare.com/data/all/coinlist`)
       .then((response) => {
-        let allCoins = response.data.Data;
-        const allKeys = Object.keys(response.data.Data);
+        let allCoins = response.data.Data
+        const allKeys = Object.keys(response.data.Data)
         allCoins = allKeys.map((key) => {
-          return { image: allCoins[key].ImageUrl, name: allCoins[key].Name, label: allCoins[key].CoinName }
-        });
+          return {
+            image: allCoins[key].ImageUrl,
+            name: allCoins[key].Name,
+            label: allCoins[key].CoinName
+          }
+        })
         this.setState({ allCoins })
       })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+      .catch((error) => { console.error(error) })
+  };
 
-
-  render() {
-    const { allCoins } = this.state;
+  render () {
+    const { allCoins } = this.state
     return (
       <MainWrapper>
         <InputWrapper>
