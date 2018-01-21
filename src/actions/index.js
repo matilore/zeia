@@ -1,8 +1,12 @@
-// import { authUser, logout } from './dashboard'
+import { receiveAllCoins } from './coins'
+import { filterCoins, selectCoin, unsubscribeSocket, setResult } from './autocomplete';
 
-// const actionCreators = {
-//     authUser,
-//     logout
-// }
+const actionCreators = {
+    receiveAllCoins,
+    filterCoins,
+    selectCoin,
+    unsubscribeSocket,
+    setResult
+}
 
-// export default actionCreators
+export default actionCreators

@@ -1,15 +1,20 @@
 import React, { PropTypes } from 'react';
 import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
-import icon from '../../images/lens.svg';
-import priceImage from '../../images/price.png';
-import change2 from '../../images/change2.png';
-import marketcap from '../../images/marketcap.png';
-import moveCursorToEnd from '../../helpers/styleHelpers';
-import textFormatter from '../../helpers/textHelper';
-import Socket from '../../helpers/Socket';
+import icon from 'images/lens.svg';
+import priceImage from 'images/price.png';
+import change2 from 'images/change2.png';
+import marketcap from 'images/marketcap.png';
+import moveCursorToEnd from 'helpers/styleHelpers';
+import textFormatter from 'helpers/textHelper';
+import Chart from 'components/Chart';
 
-const socket = new Socket('https://streamer.cryptocompare.com/');
+// redux
+import actionCreators from 'actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+
 const BASE_URL_IMAGES = 'https://www.cryptocompare.com/';
 
 const blinker = keyframes`
@@ -24,7 +29,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-items: center;
     align-items: center;
-    margin-top: 2%;
+    margin-top: 10%;
 `;
 
 const Results = styled.div`
@@ -125,155 +130,105 @@ const InfoIcon = styled.div`
 `;
 
 class Autocomplete extends React.Component {
+
   constructor() {
     super();
     this.state = {
-      value: '',
       cursor: 0,
-      result: {},
-      filteredCoins: []
-    };
-  }
-
-  setResult = (result, convertFrom, convertTo) => {
-    this.calculatePrice(result, convertFrom, convertTo);
-  };
-
-  calculatePrice = (result, convertFrom, convertTo) => {
-    if (convertTo === 'BTC') {
-      axios.get('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=EUR')
-        .then((response) => {
-          const formattedResponse = response.data.DISPLAY.BTC.EUR;
-          let price = formattedResponse.PRICE;
-          price = price.slice(2, price.length - 1);
-          price = price.split(',').join('');
-          price = parseFloat(price);
-          price = parseFloat(result.PRICE * price).toFixed(4);
-          this.setState({
-            result: {
-              ...this.state.result,
-              price,
-              change24: result.CHANGE24HOURPCT
-            }
-          });
-        })
-        .catch((error) => { console.log(error); });
-    } else {
-      this.setState({
-        result: {
-          ...this.state.result,
-          price: result.PRICE,
-          change24: result.CHANGE24HOURPCT
-        }
-      });
+      result: {}
     }
   }
 
-  filterCoins = input => (
-    this.props.allCoins.filter(coin => (
-      coin.label.toLowerCase().includes(input.toLowerCase()) ||
-          coin.name.toLowerCase().includes(input.toLowerCase())
-    )).slice(0, 10)
-  )
 
   handleChange = (event) => {
+    const {
+      filterCoins, filteredCoins, selectCoin,
+      unsubscribeSocket, allCoins, setResult
+    } = this.props;
+
     const input = event.target.value;
-    const { cursor, filteredCoins } = this.state;
+    const { cursor } = this.state;
     if (event.key === 'ArrowUp' && cursor > 0) {
       moveCursorToEnd(event.target);
       this.setState(prevState => ({
         cursor: prevState.cursor - 1
-      }));
+      }))
     } else if (event.key === 'ArrowDown' && cursor < filteredCoins.length - 1) {
       this.setState(prevState => ({
         cursor: prevState.cursor + 1
-      }));
+      }))
     } else if (event.key === 'Enter') {
       const selectedCoin = filteredCoins[cursor].name;
-      this.selectValue(selectedCoin);
+      selectCoin(selectedCoin, setResult);
     } else if (input !== '') {
-      const newFilteredCoins = this.filterCoins(input);
-      this.setState({ value: input, filteredCoins: newFilteredCoins });
+      filterCoins(allCoins, input);
     } else {
-      socket.unsubscribe();
-      this.setState({ value: input, result: {}, cursor: 0 });
+      unsubscribeSocket();
+      this.setState({ value: input, result: {}, cursor: 0 })
     }
-  }
-
-  selectValue = (selection) => {
-    socket.unsubscribe();
-    const coin = typeof selection === 'string' ? selection : selection.target.getAttribute('data-name');
-    socket.subscribe(coin, this.setResult);
-    axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${coin}&tsyms=EUR`)
-      .then((response) => {
-        const formattedResponse = response.data.DISPLAY[coin].EUR;
-        let mrkcap = formattedResponse.MKTCAP;
-        mrkcap = textFormatter(mrkcap);
-        this.setState({ result: { ...this.state.result, mrkcap } });
-      })
-      .catch((error) => { console.log(error); });
-  }
+  };
 
   changeCursor = (event) => {
-    this.setState({ cursor: Number(event.target.id) });
+    this.setState({ cursor: Number(event.target.id) })
   }
 
   render() {
-    const { cursor, filteredCoins, result } = this.state;
+    const { cursor } = this.state;
+    const { filteredCoins, inputValue, result } = this.props;
     return (
       <Wrapper>
         <InputWrapper>
           <Icon />
           <Input
-            placeholder="Type the crypto name..."
+            placeholder='Type the crypto name...'
             onKeyUp={this.handleChange} />
         </InputWrapper>
         {
-          this.state.value != '' &&
-            <Results>
-              <Ul>
-                {
-                  filteredCoins.map((coin, index) => (
-                    cursor === index
-                      ?
-                        <Li
-                          key={coin.name}
-                          data-name={coin.name}
-                          selected
-                          id={index}
-                          onClick={this.selectValue}>
-                          <CoinIcon src={coin.image} />
-                          {coin.label} ({coin.name})
+          inputValue != '' &&
+          <Results>
+            <Ul>
+              {
+                filteredCoins.map((coin, index) => (
+                  cursor === index
+                    ?
+                    <Li
+                      key={coin.name}
+                      data-name={coin.name}
+                      selected
+                      id={index}
+                      onClick={this.selectValue}>
+                      <CoinIcon src={coin.image} />
+                      {coin.label} ({coin.name})
                         </Li>
-                        :
-                        <Li
-                          key={coin.name}
-                          data-name={coin.name}
-                          onMouseOver={this.changeCursor}
-                          onFocus={this.changeCursor}
-                          id={index}
-                          onClick={this.selectValue}>
-                          <CoinIcon src={coin.image} />
-                          {coin.label} ({coin.name})
+                    :
+                    <Li
+                      key={coin.name}
+                      data-name={coin.name}
+                      onMouseOver={this.changeCursor}
+                      onFocus={this.changeCursor}
+                      id={index}
+                      onClick={this.selectValue}>
+                      <CoinIcon src={coin.image} />
+                      {coin.label} ({coin.name})
                         </Li>
-                  ))
-                }
-              </Ul>
-            </Results>
+                ))
+              }
+            </Ul>
+          </Results>
         }
         {
           Object.keys(result).length === 3 &&
-            <Result>
-              <InfoIconWrapper>
-                <InfoIcon src={priceImage} />Price: <br />{result.price}€
+          <Result>
+            <InfoIconWrapper>
+              <InfoIcon src={priceImage} />Price: <br />{result.price}€
               </InfoIconWrapper>
-              <InfoIconWrapper>
-                <InfoIcon src={change2} />24h trend: <br />{result.change24}
-              </InfoIconWrapper>
-              <InfoIconWrapper>
-                <InfoIcon src={marketcap} />Market cap: <br />{result.mrkcap}
-              </InfoIconWrapper>
-            </Result>
+            <InfoIconWrapper>
+              <InfoIcon src={change2} />24h trend: <br />{result.change24}
+            </InfoIconWrapper>
+            <InfoIconWrapper>
+              <InfoIcon src={marketcap} />Market cap: <br />{result.mrkcap}
+            </InfoIconWrapper>
+          </Result>
         }
       </Wrapper>
     );
@@ -281,7 +236,16 @@ class Autocomplete extends React.Component {
 }
 
 Autocomplete.propTypes = {
-  allCoins: PropTypes.arrayOf()
+  allCoins: PropTypes.arrayOf({})
 };
 
-export default Autocomplete;
+const mapStateToProps = (state) => {
+  return { ...state.autocomplete };
+}
+
+
+const mapDispachToProps = (dispatch) => {
+  return bindActionCreators({ ...actionCreators }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispachToProps)(Autocomplete);

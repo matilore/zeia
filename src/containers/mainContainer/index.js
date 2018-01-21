@@ -2,6 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import Autocomplete from 'components/Autocomplete';
+import actionCreators from 'actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 const MainWrapper = styled.div`
   background: rgb(55, 62, 81);
@@ -20,40 +23,31 @@ const InputWrapper = styled.div`
 `;
 
 class MainContainer extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      result: '',
-      allCoins: [],
-      value: ''
-    };
-  }
 
   componentWillMount = () => {
-    axios.get('https://min-api.cryptocompare.com/data/all/coinlist')
-      .then((response) => {
-        let allCoins = response.data.Data;
-        const allKeys = Object.keys(response.data.Data);
-        allCoins = allKeys.map(key => ({
-          image: allCoins[key].ImageUrl,
-          name: allCoins[key].Name,
-          label: allCoins[key].CoinName
-        }));
-        this.setState({ allCoins });
-      })
-      .catch((error) => { console.error(error); });
-  };
+    this.props.receiveAllCoins()
+  }
+
 
   render() {
-    const { allCoins } = this.state;
     return (
       <MainWrapper>
         <InputWrapper>
-          <Autocomplete allCoins={allCoins} />
+          <Autocomplete allCoins={this.props.allCoins}/>
         </InputWrapper>
       </MainWrapper>
     );
   }
 }
 
-export default MainContainer;
+
+function mapStateToProps(state) {
+  return { allCoins: state.coinsInfo.allCoins};
+}
+
+
+function mapDispachToProps(dispatch) {
+  return bindActionCreators({ ...actionCreators }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispachToProps)(MainContainer);
