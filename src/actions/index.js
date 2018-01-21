@@ -1,12 +1,13 @@
 import { receiveAllCoins } from './coins'
-import { filterCoins, selectCoin, unsubscribeSocket, setResult } from './autocomplete';
+import { filterCoins, selectCoin, unsubscribeSocket, setResult, reset } from './autocomplete';
 
 const actionCreators = {
     receiveAllCoins,
     filterCoins,
     selectCoin,
     unsubscribeSocket,
-    setResult
+    setResult,
+    reset
 }
 
 export default actionCreators

@@ -136,7 +136,6 @@ class Autocomplete extends React.Component {
     super();
     this.state = {
       cursor: 0,
-      result: {}
     }
   }
 
@@ -144,7 +143,8 @@ class Autocomplete extends React.Component {
   handleChange = (event) => {
     const {
       filterCoins, filteredCoins, selectCoin,
-      unsubscribeSocket, allCoins, setResult
+      unsubscribeSocket, allCoins, setResult,
+      reset
     } = this.props;
 
     const input = event.target.value;
@@ -164,8 +164,7 @@ class Autocomplete extends React.Component {
     } else if (input !== '') {
       filterCoins(allCoins, input);
     } else {
-      unsubscribeSocket();
-      this.setState({ value: input, result: {}, cursor: 0 })
+      reset();
     }
   };
 
@@ -185,7 +184,7 @@ class Autocomplete extends React.Component {
             onKeyUp={this.handleChange} />
         </InputWrapper>
         {
-          inputValue != '' &&
+          inputValue !== '' &&
           <Results>
             <Ul>
               {
@@ -237,7 +236,7 @@ class Autocomplete extends React.Component {
 }
 
 Autocomplete.propTypes = {
-  allCoins: PropTypes.arrayOf({})
+  allCoins: PropTypes.arrayOf(PropTypes.object)
 };
 
 const mapStateToProps = (state) => {

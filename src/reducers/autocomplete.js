@@ -14,10 +14,16 @@ function autocomplete(state = initialState, action) {
                 inputValue: action.inputValue
             }
         case 'SET_SELECTED_COIN':
-        console.log(action)
             return {
                 ...state,
                 result: {...state.result, ...action.result},
+            }
+        case 'RESET_AUTOCOMPLETE':
+            return {
+                ...state,
+                inputValue: '',
+                result: {},
+                cursor: 0
             }
         default:
             return state;

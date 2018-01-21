@@ -6,6 +6,7 @@ import textFormatter from 'helpers/textHelper';
 const FILTER_COINS = 'FILTER_COINS';
 const SELECT_COIN = 'SELECT_COIN';
 const SET_SELECTED_COIN = 'SET_SELECTED_COIN';
+const RESET_AUTOCOMPLETE = 'RESET_AUTOCOMPLETE';
 
 
 const socket = new Socket('https://streamer.cryptocompare.com/');
@@ -75,10 +76,25 @@ export const setResult = (result, convertFrom, convertTo) => {
     }
 }
 
+const resetAutocomplete = () => {
+    return {
+        type: RESET_AUTOCOMPLETE
+    }
+}
 
-export const unsubscribeSocket = () => {
+const unsubscribeSocket = () => {
     socket.unsubscribe();
 }
+
+
+export const reset = () => {
+    unsubscribeSocket();
+    return dispatch => {
+        dispatch(resetAutocomplete());
+    }
+}
+
+
 
 
 export function receiveAllCoins() {
