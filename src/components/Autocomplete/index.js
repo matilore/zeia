@@ -15,7 +15,6 @@ import actionCreators from 'actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-
 const BASE_URL_IMAGES = 'https://www.cryptocompare.com/';
 
 const blinker = keyframes`
@@ -25,69 +24,69 @@ const blinker = keyframes`
 `;
 
 const Wrapper = styled.div`
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    align-items: center;
-    margin-top: 10%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+  margin-top: 10%;
 `;
 
 const Results = styled.div`
-    width: 100%;
-    display:flex;
-    justify-content: center;
-    margin-top: 20px;
-    height: 70%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  height: 70%;
 `;
 
 const Ul = styled.ul`
-    width: 80%;
-    margin: 0;
-    padding: 0;
+  width: 80%;
+  margin: 0;
+  padding: 0;
 `;
 
 const InputWrapper = styled.div`
-    height: 2.5em;
-    display:flex;
-    align-items: center;
+  height: 2.5em;
+  display: flex;
+  align-items: center;
 `;
 
 const Icon = styled.div`
-    width: 22px;
-    height: 17px;
-    position: relative;
-    left: calc(5% + 2px);
-    background: url(${icon});
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+  width: 22px;
+  height: 17px;
+  position: relative;
+  left: calc(5% + 2px);
+  background: url(${icon});
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 const Input = styled.input`
-    width: 100%;
-    height: 2em;
-    padding-left: 8%;
-    line-height: 1.5em;
-    font-size: 1.2em;
-    font-family: 'Orbitron', sans-serif;
-    color: transparent;
-    text-shadow: 0 0 0 #2196f3;
-    outline: none;
-    border-bottom: 4px solid transparent;
-    &:focus {
-        animation: ${blinker} 2s linear infinite;
-    }
+  width: 100%;
+  height: 2em;
+  padding-left: 8%;
+  line-height: 1.5em;
+  font-size: 1.2em;
+  font-family: 'Orbitron', sans-serif;
+  color: transparent;
+  text-shadow: 0 0 0 #2196f3;
+  outline: none;
+  border-bottom: 4px solid transparent;
+  &:focus {
+    animation: ${blinker} 2s linear infinite;
+  }
 `;
 
 const Li = styled.li`
-    list-style-type: none;
-    display: flex;
-    margin: 0px 35px 20px 35px;
-    line-height: 1.5em;
-    width: 90%;
-    background: ${props => (props.selected ? 'rgb(40, 95, 161)' : 'transparent')};
-    color: ${props => (props.selected ? 'white' : 'rgb(244, 223, 246)')}
+  list-style-type: none;
+  display: flex;
+  margin: 0px 35px 20px 35px;
+  line-height: 1.5em;
+  width: 90%;
+  background: ${props => (props.selected ? 'rgb(40, 95, 161)' : 'transparent')};
+  color: ${props => (props.selected ? 'white' : 'rgb(244, 223, 246)')};
 `;
 
 const Result = styled.div`
@@ -101,49 +100,51 @@ const Result = styled.div`
 
 const CoinIcon = styled.div`
   width: 22px;
-    height: 20px;
-    position: relative;
-    margin-right: 10px;
-    background: url(${BASE_URL_IMAGES}${props => props.src});
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+  height: 20px;
+  position: relative;
+  margin-right: 10px;
+  background: url(${BASE_URL_IMAGES}${props => props.src});
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 const InfoIconWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-    font-size: 0.6em;
-    color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  font-size: 0.6em;
+  color: white;
 `;
 
 const InfoIcon = styled.div`
-    width: 40px;
-    height: 40px;
-    position: relative;
-    margin-right: 10px;
-    background: url(${props => props.src});
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  margin-right: 10px;
+  background: url(${props => props.src});
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 class Autocomplete extends React.Component {
-
   constructor() {
     super();
     this.state = {
-      cursor: 0,
-    }
+      cursor: 0
+    };
   }
 
-
-  handleChange = (event) => {
+  handleChange = event => {
     const {
-      filterCoins, filteredCoins, selectCoin,
-      unsubscribeSocket, allCoins, setResult,
+      filterCoins,
+      filteredCoins,
+      selectCoin,
+      unsubscribeSocket,
+      allCoins,
+      setResult,
       reset
     } = this.props;
 
@@ -153,11 +154,11 @@ class Autocomplete extends React.Component {
       moveCursorToEnd(event.target);
       this.setState(prevState => ({
         cursor: prevState.cursor - 1
-      }))
+      }));
     } else if (event.key === 'ArrowDown' && cursor < filteredCoins.length - 1) {
       this.setState(prevState => ({
         cursor: prevState.cursor + 1
-      }))
+      }));
     } else if (event.key === 'Enter') {
       const selectedCoin = filteredCoins[cursor].name;
       selectCoin(selectedCoin, setResult);
@@ -168,9 +169,9 @@ class Autocomplete extends React.Component {
     }
   };
 
-  changeCursor = (event) => {
-    this.setState({ cursor: Number(event.target.id) })
-  }
+  changeCursor = event => {
+    this.setState({ cursor: Number(event.target.id) });
+  };
 
   render() {
     const { cursor } = this.state;
@@ -180,56 +181,59 @@ class Autocomplete extends React.Component {
         <InputWrapper>
           <Icon />
           <Input
-            placeholder='Type the crypto name...'
-            onKeyUp={this.handleChange} />
+            placeholder="Type the crypto name..."
+            onKeyUp={this.handleChange}
+          />
         </InputWrapper>
-        {
-          inputValue !== '' &&
+        {inputValue !== '' && (
           <Results>
             <Ul>
-              {
-                filteredCoins.map((coin, index) => (
-                  cursor === index
-                    ?
+              {filteredCoins.map(
+                (coin, index) =>
+                  cursor === index ? (
                     <Li
                       key={coin.name}
                       data-name={coin.name}
                       selected
                       id={index}
-                      onClick={this.selectValue}>
+                      onClick={this.selectValue}
+                    >
                       <CoinIcon src={coin.image} />
                       {coin.label} ({coin.name})
-                        </Li>
-                    :
+                    </Li>
+                  ) : (
                     <Li
                       key={coin.name}
                       data-name={coin.name}
                       onMouseOver={this.changeCursor}
                       onFocus={this.changeCursor}
                       id={index}
-                      onClick={this.selectValue}>
+                      onClick={this.selectValue}
+                    >
                       <CoinIcon src={coin.image} />
                       {coin.label} ({coin.name})
-                        </Li>
-                ))
-              }
+                    </Li>
+                  )
+              )}
             </Ul>
           </Results>
-        }
-        {
-          Object.keys(result).length === 3 &&
+        )}
+        {Object.keys(result).length === 3 && (
           <Result>
             <InfoIconWrapper>
-              <InfoIcon src={priceImage} />Price: <br />{result.price}€
-              </InfoIconWrapper>
-            <InfoIconWrapper>
-              <InfoIcon src={change2} />24h trend: <br />{result.change24}
+              <InfoIcon src={priceImage} />Price: <br />
+              {result.price}€
             </InfoIconWrapper>
             <InfoIconWrapper>
-              <InfoIcon src={marketcap} />Market cap: <br />{result.mrkcap}
+              <InfoIcon src={change2} />24h trend: <br />
+              {result.change24}
+            </InfoIconWrapper>
+            <InfoIconWrapper>
+              <InfoIcon src={marketcap} />Market cap: <br />
+              {result.mrkcap}
             </InfoIconWrapper>
           </Result>
-        }
+        )}
       </Wrapper>
     );
   }
@@ -239,13 +243,12 @@ Autocomplete.propTypes = {
   allCoins: PropTypes.arrayOf(PropTypes.object)
 };
 
-const mapStateToProps = (state) => {
-  return { ...state.autocomplete };
-}
+const mapStateToProps = ({ autocomplete }) => {
+  return autocomplete;
+};
 
-
-const mapDispachToProps = (dispatch) => {
-  return bindActionCreators({ ...actionCreators }, dispatch);
-}
+const mapDispachToProps = dispatch => {
+  return bindActionCreators(actionCreators, dispatch);
+};
 
 export default connect(mapStateToProps, mapDispachToProps)(Autocomplete);

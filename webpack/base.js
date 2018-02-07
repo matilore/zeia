@@ -1,6 +1,5 @@
 import path from 'path';
 
-
 class BaseWebpackConfig {
   constructor() {
     this._config = {};
@@ -15,19 +14,15 @@ class BaseWebpackConfig {
 
   get defaultConfig() {
     return {
-      devtool: 'cheap-module-source-map',
       entry: this.srcPath,
       output: {
         path: this.buildPath,
         filename: 'index_bundle.js'
       },
       resolve: {
-        modules: [
-          path.resolve('./src'),
-          'node_modules'
-        ]
+        modules: [path.resolve('./src'), 'node_modules']
       }
-    }
+    };
   }
 
   set config(config) {

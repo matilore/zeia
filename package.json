@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf dist/*",
-    "compile:production": "npm run clean && webpack -p",
+    "compile:production": "npm run clean && webpack -p --env production",
     "compile:development": "npm run clean && webpack --env development",
     "fix": "eslint --fix src/.; exit 0",
     "lint": "eslint src/.; exit 0",
@@ -39,6 +39,7 @@
     "html-webpack-plugin": "^2.29.0",
     "image-webpack-loader": "^3.3.1",
     "node-sass": "^4.5.3",
+    "react-hot-loader": "^4.0.0-beta.21",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "webpack": "^3.2.0",

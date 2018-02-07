@@ -46,6 +46,7 @@ class ProductionWebpackConfig extends BaseWebpackConfig {
           }
         ]
       },
+      devtool: 'cheap-module-source-map',
       plugins: [
         new HtmlWebpackPlugin({
           template: './src/index.html'
@@ -60,7 +61,7 @@ class ProductionWebpackConfig extends BaseWebpackConfig {
           }
         })
       ]
-    }
+    };
   }
 
   get environment() {

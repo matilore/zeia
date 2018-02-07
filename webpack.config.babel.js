@@ -1,8 +1,7 @@
 const webpackConfigs = require('./webpack');
 const defaultConfig = 'development';
 
-module.exports = (configName) => {
-
+module.exports = configName => {
   // If there was no configuration give, assume default
   const requestedConfig = configName || defaultConfig;
 
@@ -25,6 +24,9 @@ module.exports = (configName) => {
 
   // Set the global environment
   process.env.NODE_ENV = loadedInstance.environment;
+
+  // pass variables to "env" key in .babelrc, if BABEL_ENV == 'dev' => env.dev in .babelrc
+  process.env.BABEL_ENV = requestedConfig;
 
   return loadedInstance.config;
 };

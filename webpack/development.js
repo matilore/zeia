@@ -25,11 +25,7 @@ class DevelopmentWebpackConfig extends BaseWebpackConfig {
           },
           {
             test: /\.(scss|sass)$/,
-            use: [
-              'style-loader',
-              'css-loader?sourceMap',
-              'sass-loader'
-            ]
+            use: ['style-loader', 'css-loader?sourceMap', 'sass-loader']
           },
           {
             test: /\.(jpe?g|svg|png|gif)$/,
@@ -49,6 +45,7 @@ class DevelopmentWebpackConfig extends BaseWebpackConfig {
           }
         ]
       },
+      devtool: 'cheap-module-inline-source-map',
       plugins: [
         new HtmlWebpackPlugin({
           template: './src/index.html'
@@ -61,7 +58,7 @@ class DevelopmentWebpackConfig extends BaseWebpackConfig {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin()
       ]
-    }
+    };
   }
 
   get environment() {

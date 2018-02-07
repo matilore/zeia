@@ -1,8 +1,9 @@
 {
-    "presets": [
-      "env",
-      "react",
-      "stage-1"
-    ],
-    "plugins": ["transform-react-jsx-img-import"]
-  }
+  "presets": ["env", "react", "stage-1"],
+  "env": {
+    "development": {
+      "plugins": []
+    }
+  },
+  "plugins": ["transform-react-jsx-img-import"]
+}

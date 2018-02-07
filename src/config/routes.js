@@ -12,11 +12,10 @@ const Routes = () => (
   <Provider store={store}>
     <Router history={history}>
       <div>
-        <Route exact path="/" component={MainContainer} />
+        <Route exact path="/home" component={MainContainer} />
       </div>
     </Router>
   </Provider>
-
 );
 
 export default Routes;
