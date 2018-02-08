@@ -23,28 +23,24 @@ const InputWrapper = styled.div`
 `;
 
 class MainContainer extends React.Component {
-
   componentWillMount = () => {
-    this.props.receiveAllCoins()
-  }
-
+    this.props.receiveAllCoins();
+  };
 
   render() {
     return (
       <MainWrapper>
         <InputWrapper>
-          <Autocomplete allCoins={this.props.allCoins}/>
+          <Autocomplete allCoins={this.props.allCoins} />
         </InputWrapper>
       </MainWrapper>
     );
   }
 }
 
-
 function mapStateToProps(state) {
-  return { allCoins: state.coinsInfo.allCoins};
+  return { allCoins: state.coinsInfo.allCoins };
 }
-
 
 function mapDispachToProps(dispatch) {
   return bindActionCreators({ ...actionCreators }, dispatch);

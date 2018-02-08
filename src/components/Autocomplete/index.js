@@ -85,8 +85,9 @@ const Li = styled.li`
   margin: 0px 35px 20px 35px;
   line-height: 1.5em;
   width: 90%;
-  background: ${props => (props.selected ? 'rgb(40, 95, 161)' : 'transparent')};
-  color: ${props => (props.selected ? 'white' : 'rgb(244, 223, 246)')};
+  background: ${(props) =>
+    props.selected ? 'rgb(40, 95, 161)' : 'transparent'};
+  color: ${(props) => (props.selected ? 'white' : 'rgb(244, 223, 246)')};
 `;
 
 const Result = styled.div`
@@ -103,7 +104,7 @@ const CoinIcon = styled.div`
   height: 20px;
   position: relative;
   margin-right: 10px;
-  background: url(${BASE_URL_IMAGES}${props => props.src});
+  background: url(${BASE_URL_IMAGES}${(props) => props.src});
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -123,7 +124,7 @@ const InfoIcon = styled.div`
   height: 40px;
   position: relative;
   margin-right: 10px;
-  background: url(${props => props.src});
+  background: url(${(props) => props.src});
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -137,7 +138,7 @@ class Autocomplete extends React.Component {
     };
   }
 
-  handleChange = event => {
+  handleChange = (event) => {
     const {
       filterCoins,
       filteredCoins,
@@ -152,11 +153,11 @@ class Autocomplete extends React.Component {
     const { cursor } = this.state;
     if (event.key === 'ArrowUp' && cursor > 0) {
       moveCursorToEnd(event.target);
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         cursor: prevState.cursor - 1
       }));
     } else if (event.key === 'ArrowDown' && cursor < filteredCoins.length - 1) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         cursor: prevState.cursor + 1
       }));
     } else if (event.key === 'Enter') {
@@ -169,7 +170,7 @@ class Autocomplete extends React.Component {
     }
   };
 
-  changeCursor = event => {
+  changeCursor = (event) => {
     this.setState({ cursor: Number(event.target.id) });
   };
 
@@ -247,7 +248,7 @@ const mapStateToProps = ({ autocomplete }) => {
   return autocomplete;
 };
 
-const mapDispachToProps = dispatch => {
+const mapDispachToProps = (dispatch) => {
   return bindActionCreators(actionCreators, dispatch);
 };
 

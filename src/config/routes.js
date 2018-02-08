@@ -7,12 +7,14 @@ import store, { history } from '../store';
 
 import PrivateRoute from '../helpers/PrivateRoute';
 import MainContainer from 'containers/mainContainer';
+import Home from 'containers/home';
 
 const Routes = () => (
   <Provider store={store}>
     <Router history={history}>
       <div>
-        <Route exact path="/home" component={MainContainer} />
+        <Route exact path="/" component={Home} />
+        <Route path="/auto" component={MainContainer} />
       </div>
     </Router>
   </Provider>
