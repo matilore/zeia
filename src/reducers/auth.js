@@ -2,7 +2,8 @@ const initialState = {
   showModal: false,
   authAction: undefined,
   currentUser: undefined,
-  isAuth: undefined
+  isAuth: undefined,
+  notification: undefined
 };
 
 function auth(state = initialState, action) {
@@ -17,7 +18,8 @@ function auth(state = initialState, action) {
       return {
         ...state,
         showModal: false,
-        authAction: undefined
+        authAction: undefined,
+        notification: undefined
       };
     case 'SUCCESS_AUTH':
       return {
@@ -32,6 +34,16 @@ function auth(state = initialState, action) {
         authAction: initialState.authAction,
         currentUser: undefined,
         isAuth: false
+      };
+    case 'NO_USER_FOUND':
+      return {
+        ...state,
+        currentUser: undefined,
+        isAuth: false,
+        notification: {
+          color: 'red',
+          message: action.notificationMessage
+        }
       };
     case 'LOGOUT':
       return {

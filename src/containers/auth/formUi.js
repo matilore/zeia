@@ -62,7 +62,6 @@ const Button = styled.button`
   border-radius: 5%;
   height: 3em;
   width: 30%;
-  margin-right: 2%;
   font-family: inherit;
   color: #fff;
   background-color: ${props =>
@@ -86,21 +85,34 @@ const Icon = styled.div`
   margin-bottom: 0.5em;
 `;
 
+const Notification = styled.p`
+  color: ${props => props.color};
+  font-size: 0.6em;
+  margin-bottom: 2em;
+`;
+
 const FormUi = ({
-  hideAuthModal, handleInputChange, handleSubmit, buttonMessage
+  hideAuthModal,
+  handleInputChange,
+  handleSubmit,
+  buttonMessage,
+  notification
 }) => (
   <ModalBackdrop>
     <ModalBody>
       <Icon onClick={hideAuthModal} />
       <FormWrapper onSubmit={handleSubmit}>
         <InputsWrapper>
-          <Input placeholder="Email" name="email" type="text" onChange={handleInputChange} />
+          <Input placeholder="Username" name="username" type="text" onChange={handleInputChange} />
           <Input
             placeholder="Password"
             name="password"
             type="password"
             onChange={handleInputChange}
           />
+          {notification && (
+            <Notification color={notification.color}>{notification.message}</Notification>
+          )}
         </InputsWrapper>
         <ButtonsWrapper>
           <Button type="submit">{buttonMessage}</Button>

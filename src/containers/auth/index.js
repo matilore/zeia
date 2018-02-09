@@ -8,7 +8,11 @@ import { bindActionCreators } from 'redux';
 import FormUi from './formUi';
 
 class Auth extends React.Component {
-  state = { buttonMessage: '' };
+  state = {
+    buttonMessage: '',
+    username: '',
+    password: ''
+  };
 
   componentWillReceiveProps(nextProps) {
     const buttonMessage = nextProps.authAction === 'signin' ? 'Signin' : 'Create Account';
@@ -17,7 +21,9 @@ class Auth extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.props.makeCall(this.state, this.props.authAction);
+    const { username, password } = this.state;
+    this.setState({ username: '', password: '' });
+    this.props.makeCall({ username, password }, this.props.authAction);
   };
 
   handleInputChange = (event) => {
@@ -27,12 +33,13 @@ class Auth extends React.Component {
   };
 
   render() {
-    const { isShowModal, hideAuthModal } = this.props;
+    const { isShowModal, hideAuthModal, notification } = this.props;
     const { handleSubmit, handleInputChange } = this;
     return (
       <div>
         {isShowModal && (
           <FormUi
+            notification={notification}
             buttonMessage={this.state.buttonMessage}
             hideAuthModal={hideAuthModal}
             handleSubmit={handleSubmit}
@@ -46,7 +53,8 @@ class Auth extends React.Component {
 
 const mapStateToProps = state => ({
   isShowModal: state.auth.showModal,
-  authAction: state.auth.authAction
+  authAction: state.auth.authAction,
+  notification: state.auth.notification
 });
 
 const mapDispachToProps = dispatch => bindActionCreators(actionCreators, dispatch);

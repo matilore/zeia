@@ -5,6 +5,7 @@ const HIDE_AUTH_MODAL = 'HIDE_AUTH_MODAL';
 const SUCCESS_AUTH = 'SUCCESS_AUTH';
 const FAILED_AUTH = 'FAILED_AUTH';
 const LOGOUT = 'LOGOUT';
+const NO_USER_FOUND = 'NO_USER_FOUND';
 
 const AUTH_URL = 'http://localhost:3000/api';
 
@@ -43,6 +44,11 @@ export const checkIsAuth = () => {
   };
 };
 
+const noUserFound = notificationMessage => ({
+  type: NO_USER_FOUND,
+  notificationMessage
+});
+
 const fetchUserbyToken = (token, dispatch) => {
   axios
     .post(`${AUTH_URL}`, { token })
@@ -50,7 +56,7 @@ const fetchUserbyToken = (token, dispatch) => {
       dispatch(successAuth(response.data.user));
     })
     .catch((error) => {
-      dispatch(noAuth);
+      dispatch(noAuth());
       console.log(error);
     });
 };
@@ -65,7 +71,11 @@ export const makeCall = (params, authAction) => (dispatch) => {
       dispatch(successAuth(response.data.user));
     })
     .catch((error) => {
-      dispatch(noAuth);
-      console.log(error);
+      if (error.response.status === 401) {
+        dispatch(noUserFound(error.response.data.message));
+      } else {
+        dispatch(noAuth());
+      }
+      console.dir(error);
     });
 };
