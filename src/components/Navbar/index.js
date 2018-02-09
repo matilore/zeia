@@ -18,6 +18,7 @@ const ButtonsWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  padding-right: 5%;
 `;
 
 const Button = styled.button`
@@ -55,18 +56,14 @@ class Navbar extends React.Component {
   state = {};
 
   componentWillMount() {
-    const token = localStorage.getItem('token');
-    console.log(token);
-    token !== undefined ? this.props.fetchUserbyToken(token) : null;
+    this.props.checkIsAuth();
   }
 
   signIn = () => {
-    // axios.post(`${AUTH_URL}/signin`);
     this.props.showAuthModal('signin');
   };
 
   signUp = () => {
-    // axios.post(`${AUTH_URL}/signin`);
     this.props.showAuthModal('signup');
   };
 
@@ -77,19 +74,26 @@ class Navbar extends React.Component {
           <Logo doHover>Zeia</Logo>
         </LogoWrapper>
         <ButtonsWrapper>
-          <Button onClick={this.signUp} backgroundColor="rgb(40, 95, 161)">
-            Signup
-          </Button>
-          <Button doHover onClick={this.signIn}>
-            Signin
-          </Button>
+          {this.props.isAuth === false && [
+            <Button key="signup" onClick={this.signUp} backgroundColor="rgb(40, 95, 161)">
+              Signup
+            </Button>,
+            <Button key="signin" doHover onClick={this.signIn}>
+              Signin
+            </Button>
+          ]}
+          {this.props.isAuth && (
+            <Button onClick={this.props.logout} backgroundColor="rgb(40, 95, 161)">
+              Logout
+            </Button>
+          )}
         </ButtonsWrapper>
       </NavBarWrapper>
     );
   }
 }
 
-const mapStateToProps = state => state;
+const mapStateToProps = ({ auth }) => auth;
 
 const mapDispachToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 

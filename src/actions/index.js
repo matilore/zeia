@@ -1,6 +1,6 @@
 import { receiveAllCoins } from './coins';
 import { filterCoins, selectCoin, unsubscribeSocket, setResult, reset } from './autocomplete';
-import { showAuthModal, hideAuthModal, makeCall, fetchUserbyToken } from './authModalActions';
+import { showAuthModal, hideAuthModal, makeCall, checkIsAuth, logout } from './authModalActions';
 
 const actionCreators = {
   receiveAllCoins,
@@ -12,7 +12,8 @@ const actionCreators = {
   showAuthModal,
   hideAuthModal,
   makeCall,
-  fetchUserbyToken
+  checkIsAuth,
+  logout
 };
 
 export default actionCreators;
