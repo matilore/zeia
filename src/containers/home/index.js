@@ -5,7 +5,7 @@ import actionCreators from 'actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import Navbar from 'components/global/Navbar';
+import Auth from 'containers/auth';
 
 const MainWrapper = styled.div`
   display: flex;
@@ -20,11 +20,7 @@ class Home extends React.Component {
   componentDidMount = () => {};
 
   render() {
-    return (
-      <div>
-        <Navbar />
-      </div>
-    );
+    return <Auth />;
   }
 }
 
