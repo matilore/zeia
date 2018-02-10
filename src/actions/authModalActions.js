@@ -31,6 +31,7 @@ const noAuth = () => ({
 });
 
 export const logout = () => {
+  history.push('/home');
   localStorage.removeItem('token');
   return {
     type: LOGOUT,

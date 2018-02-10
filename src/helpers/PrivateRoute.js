@@ -11,14 +11,17 @@ const isAuth = function () {
 export default ({ component, ...rest }) => (
   <Route
     {...rest}
-    render={props => (
-    isAuth() ? (
-      React.createElement(component, props)
-    ) : (
-      <Redirect to={{
-        pathname: '/signup',
-        state: { from: props.location }
-      }} />
-    )
-  )} />
+    render={props =>
+      (isAuth() ? (
+        React.createElement(component, props)
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/',
+            state: { from: props.location }
+          }}
+        />
+      ))
+    }
+  />
 );

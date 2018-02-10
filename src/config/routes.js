@@ -22,7 +22,7 @@ const Routes = () => (
           <Route component={Navbar} />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/user" component={MainContainer} />
+            <PrivateRoute path="/user" component={MainContainer} />
           </Switch>
         </div>
       </Router>
