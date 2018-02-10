@@ -4,7 +4,8 @@ import { ThemeProvider, injectGlobal } from 'styled-components';
 
 import { Provider } from 'react-redux';
 
-import store, { history } from '../store';
+import store from './store';
+import history from './history';
 
 import PrivateRoute from '../helpers/PrivateRoute';
 import MainContainer from 'containers/mainContainer';
@@ -21,7 +22,7 @@ const Routes = () => (
           <Route component={Navbar} />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/auto" component={MainContainer} />
+            <Route path="/user" component={MainContainer} />
           </Switch>
         </div>
       </Router>

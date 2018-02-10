@@ -1,4 +1,5 @@
 import axios from 'axios';
+import history from 'config/history';
 
 const SHOW_AUTH_MODAL = 'SHOW_AUTH_MODAL';
 const HIDE_AUTH_MODAL = 'HIDE_AUTH_MODAL';
@@ -69,6 +70,7 @@ export const makeCall = (params, authAction) => (dispatch) => {
         localStorage.setItem('token', response.data.token);
       }
       dispatch(successAuth(response.data.user));
+      history.push('/user');
     })
     .catch((error) => {
       if (error.response.status === 401) {
