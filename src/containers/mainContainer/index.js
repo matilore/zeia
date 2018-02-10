@@ -11,7 +11,6 @@ const MainWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Orbitron', sans-serif;
 `;
 
 const InputWrapper = styled.div`

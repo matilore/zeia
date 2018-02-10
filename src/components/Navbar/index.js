@@ -10,7 +10,6 @@ const NavBarWrapper = styled.div`
   justify-content: space-around;
   background-color: rgb(55, 62, 81);
   height: 80px;
-  font-family: 'Orbitron', sans-serif;
   color: #fff;
 `;
 
@@ -34,7 +33,7 @@ const Button = styled.button`
   color: #fff;
   background-color: ${props => (props.backgroundColor ? props.backgroundColor : 'inherit')};
   &:hover {
-    color: ${props => (props.doHover ? 'rgb(40, 95, 161)' : 'none')};
+    color: ${props => (props.doHover ? props.theme.secondary : 'none')};
   }
 `;
 
@@ -48,7 +47,7 @@ const Logo = styled.span`
   padding-left: 30px;
   cursor: pointer;
   &:hover {
-    color: ${props => (props.doHover ? 'rgb(40, 95, 161)' : 'none')};
+    color: ${props => (props.doHover ? props.theme.secondary : 'none')};
   }
 `;
 

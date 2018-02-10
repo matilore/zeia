@@ -69,7 +69,6 @@ const Input = styled.input`
   padding-left: 8%;
   line-height: 1.5em;
   font-size: 1.2em;
-  font-family: 'Orbitron', sans-serif;
   color: transparent;
   text-shadow: 0 0 0 #2196f3;
   outline: none;
@@ -85,9 +84,8 @@ const Li = styled.li`
   margin: 0px 35px 20px 35px;
   line-height: 1.5em;
   width: 90%;
-  background: ${(props) =>
-    props.selected ? 'rgb(40, 95, 161)' : 'transparent'};
-  color: ${(props) => (props.selected ? 'white' : 'rgb(244, 223, 246)')};
+  background: ${props => (props.selected ? 'rgb(40, 95, 161)' : 'transparent')};
+  color: ${props => (props.selected ? 'white' : 'rgb(244, 223, 246)')};
 `;
 
 const Result = styled.div`
@@ -104,7 +102,7 @@ const CoinIcon = styled.div`
   height: 20px;
   position: relative;
   margin-right: 10px;
-  background: url(${BASE_URL_IMAGES}${(props) => props.src});
+  background: url(${BASE_URL_IMAGES}${props => props.src});
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -124,7 +122,7 @@ const InfoIcon = styled.div`
   height: 40px;
   position: relative;
   margin-right: 10px;
-  background: url(${(props) => props.src});
+  background: url(${props => props.src});
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -153,11 +151,11 @@ class Autocomplete extends React.Component {
     const { cursor } = this.state;
     if (event.key === 'ArrowUp' && cursor > 0) {
       moveCursorToEnd(event.target);
-      this.setState((prevState) => ({
+      this.setState(prevState => ({
         cursor: prevState.cursor - 1
       }));
     } else if (event.key === 'ArrowDown' && cursor < filteredCoins.length - 1) {
-      this.setState((prevState) => ({
+      this.setState(prevState => ({
         cursor: prevState.cursor + 1
       }));
     } else if (event.key === 'Enter') {
@@ -181,17 +179,13 @@ class Autocomplete extends React.Component {
       <Wrapper>
         <InputWrapper>
           <Icon />
-          <Input
-            placeholder="Type the crypto name..."
-            onKeyUp={this.handleChange}
-          />
+          <Input placeholder="Type the crypto name..." onKeyUp={this.handleChange} />
         </InputWrapper>
         {inputValue !== '' && (
           <Results>
             <Ul>
-              {filteredCoins.map(
-                (coin, index) =>
-                  cursor === index ? (
+              {filteredCoins.map((coin, index) =>
+                  (cursor === index ? (
                     <Li
                       key={coin.name}
                       data-name={coin.name}
@@ -214,8 +208,7 @@ class Autocomplete extends React.Component {
                       <CoinIcon src={coin.image} />
                       {coin.label} ({coin.name})
                     </Li>
-                  )
-              )}
+                  )))}
             </Ul>
           </Results>
         )}
@@ -244,12 +237,8 @@ Autocomplete.propTypes = {
   allCoins: PropTypes.arrayOf(PropTypes.object)
 };
 
-const mapStateToProps = ({ autocomplete }) => {
-  return autocomplete;
-};
+const mapStateToProps = ({ autocomplete }) => autocomplete;
 
-const mapDispachToProps = (dispatch) => {
-  return bindActionCreators(actionCreators, dispatch);
-};
+const mapDispachToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 
 export default connect(mapStateToProps, mapDispachToProps)(Autocomplete);
