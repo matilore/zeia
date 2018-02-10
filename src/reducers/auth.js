@@ -22,7 +22,6 @@ function auth(state = initialState, action) {
         notification: undefined
       };
     case 'SUCCESS_AUTH':
-      console.log(state);
       return {
         showModal: false,
         authAction: initialState.authAction,

@@ -31,7 +31,7 @@ const noAuth = () => ({
 });
 
 export const logout = () => {
-  history.push('/home');
+  history.push('/');
   localStorage.removeItem('token');
   return {
     type: LOGOUT,
@@ -64,6 +64,7 @@ const fetchUserbyToken = (token, dispatch) => {
 };
 
 export const makeCall = (params, authAction) => (dispatch) => {
+  console.log(params);
   axios
     .post(`${AUTH_URL}/${authAction}`, params)
     .then((response) => {

@@ -22,7 +22,7 @@ class Auth extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const { username, password } = this.state;
-    this.setState({ username: '', password: '' });
+    // this.setState({ username: '', password: '' });
     this.props.makeCall({ username, password }, this.props.authAction);
   };
 
