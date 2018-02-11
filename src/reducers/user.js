@@ -1,12 +1,18 @@
-const initialState = {
+import { combineReducers } from 'redux';
+
+const initialAuthState = {
   showModal: false,
   authAction: undefined,
-  currentUser: undefined,
   isAuth: undefined,
   notification: undefined
 };
 
-function auth(state = initialState, action) {
+const initialUserInfoState = {
+  coins: [],
+  username: undefined
+};
+
+function auth(state = initialAuthState, action) {
   switch (action.type) {
     case 'SHOW_AUTH_MODAL':
       return {
@@ -23,15 +29,14 @@ function auth(state = initialState, action) {
       };
     case 'SUCCESS_AUTH':
       return {
+        ...state,
         showModal: false,
-        authAction: initialState.authAction,
-        currentUser: action.user,
         isAuth: true
       };
     case 'FAILED_AUTH':
       return {
+        ...state,
         showModal: false,
-        authAction: initialState.authAction,
         currentUser: undefined,
         isAuth: false
       };
@@ -47,8 +52,8 @@ function auth(state = initialState, action) {
       };
     case 'LOGOUT':
       return {
+        ...state,
         showModal: false,
-        authAction: initialState.authAction,
         currentUser: undefined,
         isAuth: false
       };
@@ -57,4 +62,22 @@ function auth(state = initialState, action) {
   }
 }
 
-export default auth;
+function userInfo(state = initialUserInfoState, action) {
+  switch (action.type) {
+    case 'SUCCESS_AUTH':
+      const { username, coins } = action.user;
+      return {
+        username,
+        coins
+      };
+    default:
+      return state;
+  }
+}
+
+const user = combineReducers({
+  auth,
+  userInfo
+});
+
+export default user;

@@ -21,7 +21,7 @@ class Chart extends React.Component {
   render() {
     const { data } = this.props;
     return (
-      <PieChart width={800} height={400}>
+      <PieChart width={800} height={300}>
         {data && (
           <Pie
             activeIndex={this.state.activeIndex}
@@ -29,8 +29,8 @@ class Chart extends React.Component {
             data={data}
             dataKey="value"
             nameKey="name"
-            cx="30%"
-            cy="30%"
+            cx="25%"
+            cy="35%"
             outerRadius={80}
             onMouseEnter={this.onPieEnter}
           >
@@ -43,7 +43,7 @@ class Chart extends React.Component {
           align="left"
           verticalAlign="middle"
           layout="vertical"
-          height={250}
+          height={150}
         />
       </PieChart>
     );

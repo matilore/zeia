@@ -24,7 +24,7 @@ const Routes = () => (
           <Switch>
             <Route exact path="/" component={Home} />
             <PrivateRoute path="/user" component={User} />
-            <PrivateRoute path="/user" component={MainContainer} />
+            <PrivateRoute path="/auto" component={MainContainer} />
           </Switch>
         </div>
       </Router>

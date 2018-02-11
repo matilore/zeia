@@ -9,7 +9,7 @@ const NavBarWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   background-color: rgb(55, 62, 81);
-  height: 80px;
+  height: 50px;
   color: #fff;
 `;
 
@@ -73,7 +73,7 @@ class Navbar extends React.Component {
           <Logo doHover>Zeia</Logo>
         </LogoWrapper>
         <ButtonsWrapper>
-          {this.props.isAuth === false && [
+          {this.props.auth.isAuth === false && [
             <Button key="signup" onClick={this.signUp} backgroundColor="rgb(40, 95, 161)">
               Signup
             </Button>,
@@ -92,7 +92,7 @@ class Navbar extends React.Component {
   }
 }
 
-const mapStateToProps = ({ auth }) => auth;
+const mapStateToProps = ({ user }) => user;
 
 const mapDispachToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 

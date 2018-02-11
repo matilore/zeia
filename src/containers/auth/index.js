@@ -52,9 +52,9 @@ class Auth extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  isShowModal: state.auth.showModal,
-  authAction: state.auth.authAction,
-  notification: state.auth.notification
+  isShowModal: state.user.auth.showModal,
+  authAction: state.user.auth.authAction,
+  notification: state.user.auth.notification
 });
 
 const mapDispachToProps = dispatch => bindActionCreators(actionCreators, dispatch);
