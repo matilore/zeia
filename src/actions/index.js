@@ -1,6 +1,7 @@
 import { receiveAllCoins } from './coins';
 import { filterCoins, selectCoin, unsubscribeSocket, setResult, reset } from './autocomplete';
 import { showAuthModal, hideAuthModal, makeCall, checkIsAuth, logout } from './userActions';
+import { selectUserCoin, setCoinResult } from './infoGraphActions';
 
 const actionCreators = {
   receiveAllCoins,
@@ -13,7 +14,9 @@ const actionCreators = {
   hideAuthModal,
   makeCall,
   checkIsAuth,
-  logout
+  logout,
+  selectUserCoin,
+  setCoinResult
 };
 
 export default actionCreators;

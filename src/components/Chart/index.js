@@ -2,14 +2,23 @@ import React from 'react';
 import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
 import { PieChart, Pie, Legend, Cell, Sector } from 'recharts';
-import { max } from 'underscore';
-import moment from 'moment';
 
 import colors from 'styles/colors';
 
+const StyledSector = styled(Sector)`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const ChartWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
 class Chart extends React.Component {
   state = {
-    activeIndex: 0
+    activeIndex: undefined
   };
 
   onPieEnter = (data, index) => {
@@ -18,34 +27,49 @@ class Chart extends React.Component {
     });
   };
 
+  onPieLeave = (data, index) => {
+    this.setState({
+      activeIndex: undefined
+    });
+  };
+
+  fetchInfo = (props, selectUserCoin) => {
+    const { name, label, image } = props;
+    selectUserCoin({ name, label, image }, this.props.setCoinResult);
+  };
+
   render() {
-    const { data } = this.props;
+    const { data, selectUserCoin } = this.props;
     return (
-      <PieChart width={800} height={300}>
-        {data && (
-          <Pie
-            activeIndex={this.state.activeIndex}
-            activeShape={renderActiveShape}
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            cx="25%"
-            cy="35%"
-            outerRadius={80}
-            onMouseEnter={this.onPieEnter}
-          >
-            {data.map((entry, index) => <Cell key={`cell-${index}`} fill={colors[index]} />)}
-          </Pie>
-        )}
-        <Legend
-          wrapperStyle={{ fontSize: 14, marginLeft: '5%', padding: '2px' }}
-          iconSize={10}
-          align="left"
-          verticalAlign="middle"
-          layout="vertical"
-          height={150}
-        />
-      </PieChart>
+      <ChartWrapper>
+        <PieChart width={800} height={300}>
+          {data && (
+            <Pie
+              activeIndex={this.state.activeIndex}
+              activeShape={renderActiveShape}
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="35%"
+              outerRadius={80}
+              onMouseEnter={this.onPieEnter}
+              onMouseLeave={this.onPieLeave}
+              onClick={props => this.fetchInfo(props, selectUserCoin)}
+            >
+              {data.map((entry, index) => <Cell key={`cell-${index}`} fill={colors[index]} />)}
+            </Pie>
+          )}
+          <Legend
+            wrapperStyle={{ fontSize: 14, position: 'absolute', left: '30%' }}
+            iconSize={10}
+            align="left"
+            verticalAlign="middle"
+            layout="vertical"
+            height={150}
+          />
+        </PieChart>
+      </ChartWrapper>
     );
   }
 }
@@ -57,7 +81,7 @@ const renderActiveShape = (props) => {
 
   return (
     <g>
-      <Sector
+      <StyledSector
         cx={cx}
         cy={cy}
         innerRadius={innerRadius}
@@ -66,7 +90,7 @@ const renderActiveShape = (props) => {
         endAngle={endAngle}
         fill={fill}
       />
-      <Sector
+      <StyledSector
         cx={cx}
         cy={cy}
         startAngle={startAngle}

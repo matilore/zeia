@@ -81,7 +81,7 @@ class Navbar extends React.Component {
               Signin
             </Button>
           ]}
-          {this.props.isAuth && (
+          {this.props.auth.isAuth && (
             <Button onClick={this.props.logout} backgroundColor="rgb(40, 95, 161)">
               Logout
             </Button>

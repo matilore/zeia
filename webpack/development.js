@@ -29,10 +29,7 @@ class DevelopmentWebpackConfig extends BaseWebpackConfig {
           },
           {
             test: /\.(jpe?g|svg|png|gif)$/,
-            use: [
-              'file-loader?name=images/[name].[ext]',
-              'image-webpack-loader'
-            ]
+            use: ['file-loader?name=images/[name].[ext]', 'image-webpack-loader']
           },
           {
             test: /\.(html)$/,
