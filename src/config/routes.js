@@ -7,10 +7,9 @@ import store from './store';
 import history from './history';
 
 import PrivateRoute from '../helpers/PrivateRoute';
-import MainContainer from 'containers/mainContainer';
-import Home from 'containers/home';
-import User from 'containers/User';
-import Navbar from 'components/Navbar';
+import Landing from 'containers/Landing';
+import Dashboard from 'containers/Dashboard';
+import Navbar from 'containers/Navbar';
 
 import theme from 'styles/theme';
 import 'styles/globalStyles';
@@ -22,9 +21,8 @@ const Routes = () => (
         <div>
           <Route component={Navbar} />
           <Switch>
-            <Route exact path="/" component={Home} />
-            <PrivateRoute path="/user" component={User} />
-            <PrivateRoute path="/auto" component={MainContainer} />
+            <Route exact path="/" component={Landing} />
+            <PrivateRoute path="/dashboard" component={Dashboard} />
           </Switch>
         </div>
       </Router>

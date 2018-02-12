@@ -5,7 +5,7 @@ import actionCreators from 'actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import Auth from 'containers/auth';
+import AuthForm from 'containers/AuthForm';
 
 const MainWrapper = styled.div`
   display: flex;
@@ -14,22 +14,18 @@ const MainWrapper = styled.div`
   color: rgb(244, 223, 246);
 `;
 
-class Home extends React.Component {
+class Landing extends React.Component {
   state = {};
 
   componentDidMount = () => {};
 
   render() {
-    return <Auth />;
+    return <AuthForm />;
   }
 }
 
-const mapStateToProps = ({ autocomplete }) => {
-  return autocomplete;
-};
+const mapStateToProps = state => ({});
 
-const mapDispachToProps = (dispatch) => {
-  return bindActionCreators(actionCreators, dispatch);
-};
+const mapDispachToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 
-export default connect(mapStateToProps, mapDispachToProps)(Home);
+export default connect(mapStateToProps, mapDispachToProps)(Landing);

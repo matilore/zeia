@@ -3,6 +3,7 @@ import Socket from 'helpers/Socket';
 import textFormatter from 'helpers/textHelper';
 
 const ADD_ACTIVE_COIN = 'ADD_ACTIVE_COIN';
+const REMOVE_ACTIVE_COIN = 'REMOVE_ACTIVE_COIN';
 
 const socket = new Socket('https://streamer.cryptocompare.com/');
 
@@ -11,7 +12,11 @@ const selectActiveCoin = activeCoinInfo => ({
   activeCoinInfo
 });
 
-export const setCoinResult = (result, convertFrom, convertTo) => (dispatch) => {
+export const deselectActiveCoin = () => ({
+  type: REMOVE_ACTIVE_COIN
+});
+
+export const setCoinResult = (result, convertFrom, convertTo) => (dispatch, getState) => {
   if (convertTo === 'BTC') {
     axios
       .get('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=EUR')
@@ -23,7 +28,11 @@ export const setCoinResult = (result, convertFrom, convertTo) => (dispatch) => {
         price = parseFloat(price);
         price = parseFloat(result.PRICE * price).toFixed(4);
         const change24 = result.CHANGE24HOURPCT;
-        dispatch(selectActiveCoin({ price, change24 }));
+
+        // PATCH!!!!
+        getState().infoGraph.showDetails
+          ? dispatch(selectActiveCoin({ price, change24 }))
+          : socket.unsubscribe();
       })
       .catch((error) => {
         console.log(error);
@@ -31,7 +40,12 @@ export const setCoinResult = (result, convertFrom, convertTo) => (dispatch) => {
   } else {
     const price = result.PRICE;
     const change24 = result.CHANGE24HOURPCT;
-    dispatch(selectActiveCoin({ price, change24 }));
+
+    // PATCH!!!!
+
+    getState().infoGraph.showDetails
+      ? dispatch(selectActiveCoin({ price, change24 }))
+      : socket.unsubscribe();
   }
 };
 
@@ -45,7 +59,11 @@ export const selectUserCoin = (coin, setCoinResult) => (dispatch) => {
       let mrkcap = formattedResponse.MKTCAP;
       mrkcap = textFormatter(mrkcap);
       const { label, image } = coin;
-      dispatch(selectActiveCoin({ label, image, mrkcap }));
+      dispatch(selectActiveCoin({
+        label,
+        image,
+        mrkcap
+      }));
     })
     .catch((error) => {
       console.log(error);

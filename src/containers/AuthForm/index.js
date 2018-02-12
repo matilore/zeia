@@ -5,9 +5,9 @@ import actionCreators from 'actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import FormUi from './formUi';
+import AuthFormUi from 'components/AuthFormUi';
 
-class Auth extends React.Component {
+class AuthForm extends React.Component {
   state = {
     buttonMessage: '',
     username: '',
@@ -22,7 +22,6 @@ class Auth extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const { username, password } = this.state;
-    // this.setState({ username: '', password: '' });
     this.props.makeCall({ username, password }, this.props.authAction);
   };
 
@@ -38,7 +37,7 @@ class Auth extends React.Component {
     return (
       <div>
         {isShowModal && (
-          <FormUi
+          <AuthFormUi
             notification={notification}
             buttonMessage={this.state.buttonMessage}
             hideAuthModal={hideAuthModal}
@@ -59,4 +58,4 @@ const mapStateToProps = state => ({
 
 const mapDispachToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 
-export default connect(mapStateToProps, mapDispachToProps)(Auth);
+export default connect(mapStateToProps, mapDispachToProps)(AuthForm);

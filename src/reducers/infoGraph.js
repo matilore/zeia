@@ -7,9 +7,13 @@ function infoGraph(state = initialState, action) {
   switch (action.type) {
     case 'ADD_ACTIVE_COIN':
       return {
-        ...state,
         activeCoinInfo: { ...state.activeCoinInfo, ...action.activeCoinInfo },
         showDetails: true
+      };
+    case 'REMOVE_ACTIVE_COIN':
+      return {
+        activeCoinInfo: undefined,
+        showDetails: false
       };
     default:
       return state;

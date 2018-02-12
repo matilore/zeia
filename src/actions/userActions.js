@@ -71,7 +71,7 @@ export const makeCall = (params, authAction) => (dispatch) => {
         localStorage.setItem('token', response.data.token);
       }
       dispatch(successAuth(response.data.user));
-      history.push('/user');
+      history.push('/dashboard');
     })
     .catch((error) => {
       if (error.response.status === 401) {

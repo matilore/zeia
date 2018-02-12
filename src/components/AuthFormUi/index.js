@@ -91,7 +91,7 @@ const Notification = styled.p`
   margin-bottom: 2em;
 `;
 
-const FormUi = ({
+const AuthForm = ({
   hideAuthModal,
   handleInputChange,
   handleSubmit,
@@ -122,4 +122,4 @@ const FormUi = ({
   </ModalBackdrop>
 );
 
-export default FormUi;
+export default AuthForm;
