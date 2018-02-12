@@ -3,3 +3,8 @@ dist
 
 # Ignore IDE files
 .idea
+
+.vscode
+.eslintrc
+.babelrc
+.editorconfig

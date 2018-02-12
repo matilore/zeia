@@ -82,7 +82,7 @@ class PieChartContainer extends React.Component {
     );
   };
 
-  clickForInfo = (props, currentIndex, selectUserCoin) => {
+  clickForInfo = (props, currentIndex, selectCoin) => {
     const { name, label, image } = props;
     if (currentIndex === this.state.lastActiveIndex && this.state.clicked === true) {
       this.setState({
@@ -97,7 +97,7 @@ class PieChartContainer extends React.Component {
         lastActiveIndex: currentIndex,
         clicked: true
       });
-      selectUserCoin({ name, label, image }, this.props.setCoinResult);
+      selectCoin({ name, label, image });
     }
   };
 
@@ -106,7 +106,7 @@ class PieChartContainer extends React.Component {
       activeIndex: this.state.activeIndex,
       renderActiveShape: this.renderActiveShape,
       data: this.props.data,
-      selectUserCoin: this.props.selectUserCoin,
+      selectCoin: this.props.selectCoin,
       onActivePie: this.onActivePie,
       onPieLeave: this.onPieLeave,
       clickForInfo: this.clickForInfo

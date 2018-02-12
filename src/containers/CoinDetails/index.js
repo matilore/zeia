@@ -20,19 +20,14 @@ class CoinDetails extends React.Component {
   render() {
     const { coins } = this.props.userInfo ? this.props.userInfo : [];
     const {
-      showDetails,
-      selectUserCoin,
-      setCoinResult,
-      deselectActiveCoin,
-      activeCoinInfo
+      showDetails, selectCoin, deselectActiveCoin, activeCoinInfo
     } = this.props;
 
     return (
       <CoinDetailsWrapper>
         <PieChartContainer
           showDetails={showDetails}
-          selectUserCoin={this.props.selectUserCoin}
-          setCoinResult={this.props.setCoinResult}
+          selectCoin={this.props.selectCoin}
           deselectActiveCoin={this.props.deselectActiveCoin}
           data={coins}
         />

@@ -1,5 +1,5 @@
 import { showAuthModal, hideAuthModal, makeCall, checkIsAuth, logout } from './userActions';
-import { selectUserCoin, setCoinResult, deselectActiveCoin } from './infoGraphActions';
+import { selectCoin, deselectActiveCoin } from './coinDetailsActions';
 
 const actionCreators = {
   showAuthModal,
@@ -7,8 +7,7 @@ const actionCreators = {
   makeCall,
   checkIsAuth,
   logout,
-  selectUserCoin,
-  setCoinResult,
+  selectCoin,
   deselectActiveCoin
 };
 

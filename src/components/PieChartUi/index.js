@@ -7,7 +7,7 @@ import colors from 'styles/colors';
 
 const PieChartUi = ({
   data,
-  selectUserCoin,
+  selectCoin,
   activeIndex,
   renderActiveShape,
   onActivePie,
@@ -27,7 +27,7 @@ const PieChartUi = ({
         outerRadius={80}
         onMouseEnter={onActivePie}
         onMouseLeave={onPieLeave}
-        onClick={(props, index) => clickForInfo(props, index, selectUserCoin)}
+        onClick={(props, index) => clickForInfo(props, index, selectCoin)}
       >
         {data.map((entry, index) => <Cell key={`cell-${index}`} fill={colors[index]} />)}
       </Pie>
